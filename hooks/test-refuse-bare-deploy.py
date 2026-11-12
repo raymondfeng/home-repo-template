@@ -23,9 +23,10 @@ BLOCK += ["cf deploy dist", "npx cf deploy dist", "npx --yes cf@1.0.0-beta.31 de
           f"{W} versions upload", f"npx {W} versions --x y upload", f"echo ok; {W} deploy"]
 BLOCK += [f"{W} rollback", f"npx {W} rollback --message x", f"{W} versions deploy", f"npx {W} versions deploy --yes",
           "cf workers deployments create --worker x", "npx cf@1 workers deployments create", "cf workers versions create --worker x"]
+BLOCK += [f"{W} publish", f"npx {W} pages publish d", f"{W} triggers deploy", f"{W} versions secret put KEY", f"npx {W} versions secret bulk f.json"]
 ALLOW = ["cf deploy".join(["echo '", "'"]), "npx cf@1.0.0-beta.31 workers deployments list --worker x", "cf workers scripts search --name x",
          "cf zero-trust access applications create --body '{}'", "cf docs search deploy", f"npx {W} deployments list --json",
-         f"{W} versions list", "git commit -m 'cf deploy notes'", "grep -n 'cf deploy' scripts/deploy.sh", "scf deploy", "cf deployments", "cf workers deployments get x", "cf workers versions list --worker x", f"{W} rollbacks", f"{W} versions view x",
+         f"{W} versions list", "git commit -m 'cf deploy notes'", "grep -n 'cf deploy' scripts/deploy.sh", "scf deploy", "cf deployments", "cf workers deployments get x", "cf workers versions list --worker x", f"{W} rollbacks", f"{W} versions view x", f"{W} versions secret list", f"{W} triggers", f"{W} secret list",
          "bash scripts/deploy.sh --deploy", f'grep -n "{W} pages deploy" AGENTS.md',
          f"npx --yes {W} pages deployment list --project-name my-site", f"git log --grep {W}",
          f"echo 'see {W} pages deploy in AGENTS.md'",

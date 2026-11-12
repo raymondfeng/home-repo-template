@@ -5,7 +5,9 @@ The site deploys only through the script that runs its gates (scripts/deploy.sh,
 skips them: run from the repo root it would ship node_modules, .agents/ and every draft. The commands that change
 what a site serves are refused, with or without npx: `cf deploy`, `cf workers deployments create`,
 `cf workers versions create`, `wrangler deploy`, `wrangler rollback`, `wrangler versions upload`,
-`wrangler versions deploy` and `wrangler pages deploy`. A command that only reads, such as a deployments list, passes. Exit 2
+`wrangler versions deploy`, `wrangler pages deploy`, and wrangler's `publish`, `triggers deploy` and
+`versions secret put`. A command that only reads, such as a deployments list, passes. The list is a set of known
+commands, not every way to change a site: see the last paragraph. Exit 2
 blocks the call and shows the reason to the agent. A script that calls cf inside it is not affected: the hook sees
 only the command. This is the pattern for any outward-facing command: copy the file and change the regex.
 
@@ -14,10 +16,10 @@ bypassed (a here-string fed to a shell, an evaluator other than `-c`). The bound
 token out of the agent's environment, and let scripts/deploy.sh or CI obtain it."""
 import json, re, sys
 
-FLAGS = r"(?:\s+-{1,2}[\w-]+(?:[ =](?!pages\b|deploy\b|versions\b|upload\b|rollback\b|workers\b|deployments\b|create\b)[^\s;&|]+)?)*"
+FLAGS = r"(?:\s+-{1,2}[\w-]+(?:[ =](?!pages\b|deploy\b|publish\b|versions\b|upload\b|rollback\b|triggers\b|secret\b|put\b|workers\b|deployments\b|create\b)[^\s;&|]+)?)*"
 RUNNER = r"(?:(?:npx|bunx|(?:pnpm|yarn|npm)\s+(?:dlx|exec))" + FLAGS + r"\s+)?"
 BARE = re.compile(r"(?:^|[;&|(`\n]|\$\(|(?:\s-[A-Za-z]*c|\beval)\s+[\"']|\bthen\b|\bdo\b|\belse\b|\bexec\b|\bsudo\b)\s*(?:\w+=\S*\s+)*"
-                  + RUNNER + r"(?:(?:\S*/)?wrangler(?:@\S+)?" + FLAGS + r"\s+(?:pages" + FLAGS + r"\s+deploy|deploy|rollback|versions" + FLAGS + r"\s+(?:upload|deploy))"
+                  + RUNNER + r"(?:(?:\S*/)?wrangler(?:@\S+)?" + FLAGS + r"\s+(?:pages" + FLAGS + r"\s+(?:deploy|publish)|deploy|publish|rollback|triggers" + FLAGS + r"\s+deploy|versions" + FLAGS + r"\s+(?:upload|deploy|secret" + FLAGS + r"\s+(?:put|bulk|delete)))"
                   r"|(?:\S*/)?cf(?:@\S+)?" + FLAGS + r"\s+(?:deploy|workers" + FLAGS + r"\s+(?:deployments|versions)" + FLAGS + r"\s+create))\b")
 
 
