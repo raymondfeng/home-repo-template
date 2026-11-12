@@ -172,7 +172,8 @@ if [ "$FIRST" = 0 ]; then
   (cd "$WORK" && "${CF[@]}" workers deployments list --worker "$WORKER") > "$WORK/deployments.txt" 2>&1 \
     || die "could not list deployments (see $WORK/deployments.txt)"
   newest=$(python3 -I -c 'import json,sys
-t=open(sys.argv[1],encoding="utf-8").read(); d=json.loads(t[t.index("{"):])
+t=open(sys.argv[1],encoding="utf-8").read()
+d=json.loads(t if t.startswith("{") else t[t.index("\n{")+1:])  # the list prints a "result_info:" line before its JSON
 print(d["deployments"][0]["versions"][0]["version_id"])' "$WORK/deployments.txt" 2>/dev/null) || newest=""
   [ "$newest" = "$BASE_DEPLOY" ] || die "the version now serving is ${newest:-unknown}, not the ledger's $BASE_DEPLOY. Someone deployed without a ledger entry, or the ledger is behind: reconcile first."
 fi
