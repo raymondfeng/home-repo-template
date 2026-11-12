@@ -18,7 +18,7 @@ discipline. This skill puts them in order.
      body, never by its status code.
    - A GitHub repo: clone it shallow into a scratch folder and pin the sha. Archive what you quote: the README,
      `docs/`, the source files you cite, `git log --oneline -50`, and the repo metadata.
-   - A client-rendered site: a browser and `innerText`, with `browser-harness` if it is installed (`README.md`). Open
+   - A client-rendered site: a browser and `innerText`, with the `browser-harness` skill. Open
      your own tab and close only that tab. Copy the DOM into a page global before you slice it, because the page
      changes between calls. If the page shows the reader's account, capture it in a context with no cookies.
      Use the browser only when a plain fetch returns a shell page.

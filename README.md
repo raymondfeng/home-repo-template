@@ -57,6 +57,7 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `.claude/skills/share-report` | Build a page from a doc and check it by eye |
 | `scripts/check_quotes.py` | Checks each quote in a doc as a fixed string against its archive. `scripts/quote-reads.json` lists every read |
 | `scripts/credscan.py` | A scan for credential patterns over the files you are about to commit or publish |
+| `.claude/skills/browser-harness` | A copy of the browser-harness skill (MIT, Browser Use): how the agent controls a real browser. The command itself is installed separately |
 | `.claude/skills/deploy-site` | Deploy the site to Cloudflare Pages through its gates. `RULES.md` holds the one-time setup and the rule behind each gate |
 | `scripts/deploy.sh` | The deploy chain: a dist pinned to HEAD, the gates, the upload, and the Access check on the new deployment. A dry run unless given `--deploy` |
 | `scripts/build-hub.py` | The hub generator. It writes `index.html` (counts, start here, what's new), `docs.html` (every doc and report, with type and age filters, a sort and full-text search), `changelog.html` (one row per deploy) and `search-index.json` |
@@ -99,7 +100,7 @@ measured on a live site: the `/md` rule in `site/_headers`, and the Access steps
 
 ## Installed skills, not copied
 
-The five skills in this repo are specific to its method. They call general skills that you install for your user
+Five skills in this repo are specific to its method. They call general skills that you install for your user
 and that stay installed. With `npx skills add <source>`:
 
 | Skill | Source | Used for |
@@ -110,10 +111,11 @@ and that stay installed. With `npx skills add <source>`:
 
 Check each source's licence before you copy a skill into a repo that you share.
 
-A browser that the agent can drive is also needed, for sources that render in the client and for the visual check in
-`share-report`. The recommended tool is [browser-harness](https://github.com/browser-use/browser-harness): a command
-on your path that controls your own Chrome over CDP. It is not a skill and is not copied here; its `install.md` has
-the setup. Any other browser tool that can read a page's text and take a screenshot also works.
+One skill from outside is copied in, because two of this repo's skills depend on it: `browser-harness`
+(`.claude/skills/browser-harness/`, MIT, from [browser-use/browser-harness](https://github.com/browser-use/browser-harness)
+at a pinned commit; `SOURCE.md` there has the commit and the update steps). The skill tells the agent how to drive your
+own Chrome over CDP. It does not install the `browser-harness` command: install that once for your user, following the
+tool's `install.md`. `check-out` uses it for sources that render in the client, and `share-report` for the visual check.
 
 ## Left out on purpose
 
@@ -125,4 +127,5 @@ the setup. Any other browser tool that can read a page's text and take a screens
 
 ## Licence
 
-MIT. See `LICENSE`.
+MIT. See `LICENSE`. The copied skill under `.claude/skills/browser-harness/` keeps its own MIT licence and copyright
+(Browser Use), in the `LICENSE` file beside it.

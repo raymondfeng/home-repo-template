@@ -14,7 +14,7 @@ it explains.
    that the two still agree.
 2. **Build it as `reports/<topic>.html`**, one self-contained file. Use an installed diagram skill
    (`README.md` lists them). Write plain prose. Link every cited source. Never invent a number.
-3. **Look at it.** Render the page in a browser (`browser-harness` if it is installed) and take a screenshot at
+3. **Look at it.** Render the page in a browser (the `browser-harness` skill) and take a screenshot at
    1440×900. Check each SVG for overlap: text
    against boxes on both edges, text against text, and the ends of arrows. Fix every overlap before you go on.
 4. **Commit** the page by its explicit path. The diagram skills leave `*.visual-check.*` files beside a page, and a

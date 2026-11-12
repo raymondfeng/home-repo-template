@@ -116,4 +116,5 @@ In this repo (`.claude/skills/`): `setup-repo` (make a fresh copy of the templat
 settings later), `check-out` (read an outside source into an archive, a read doc and a table of
 borrows), `capture-sync` (turn a meeting or a chat into a record), `share-report` (build a page for a reader), `deploy-site`
 (publish the site through its gates).
-`README.md` lists the installed skills these three call.
+One skill is a copy from outside and is not edited here: `browser-harness` (how to control a real browser; the command
+is installed for the user, see `SOURCE.md` beside it). `README.md` lists the installed skills that the others call.
