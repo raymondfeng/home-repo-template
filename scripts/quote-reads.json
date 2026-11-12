@@ -1,0 +1,6 @@
+[
+ {
+  "name": "check-example-quotes",
+  "args": "--doc docs/landscape/example-source-read-2026-01-01.md --archive docs/assets/example-source-2026-01-01"
+ }
+]

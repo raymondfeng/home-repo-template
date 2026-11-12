@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doc</title>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" integrity="sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" integrity="sha384-+VfUPEb0PdtChMwmBcBmykRMDd+v6D/oFmB3rZM/puCMDYcIvF968OimRh4KQY9a" crossorigin="anonymous"></script>
+<style>
+ body { font: 16px/1.6 system-ui, sans-serif; max-width: 52rem; margin: 2rem auto; padding: 0 1rem; }
+ pre, code { font-family: ui-monospace, monospace; font-size: .9em; }
+ pre { overflow-x: auto; padding: .8rem; background: #f4f4f4; }
+ table { border-collapse: collapse; } td, th { border: 1px solid #ccc; padding: .3rem .6rem; vertical-align: top; }
+ img { max-width: 100%; }
+</style>
+</head>
+<body>
+<p><a href="./">← Home</a> · <a href="docs.html">Library</a></p>
+<main id="doc">Loading…</main>
+<script>
+// Renders one Markdown file of this site: md.html?f=docs/<folder>/<name>.md
+// Only a relative path that ends in .md is fetched. The output goes through DOMPurify.
+(async () => {
+  const el = document.getElementById('doc');
+  const f = new URLSearchParams(location.search).get('f') || '';
+  // A file under docs/assets/ is a raw capture of an outside source. It is served inert there and is never rendered here.
+  // Every segment must be a plain name, so that `./docs/assets/…` or `docs//assets/…` cannot pass as another path.
+  const allowed = (f) => /^[\p{L}\p{N}_./-]+\.md$/u.test(f) && !f.split('/').some(s => s === '' || s === '.' || s === '..') && !f.startsWith('docs/assets/');
+  if (!allowed(f)) { el.textContent = 'No such doc.'; return; }
+  const res = await fetch(f, { cache: 'no-cache' });
+  const text = await res.text();
+  // A site with a fallback page answers 200 with HTML for a missing path, so judge by the body.
+  if (!res.ok || /^\s*<!DOCTYPE html/i.test(text)) { el.textContent = 'No such doc: ' + f; return; }
+  document.title = f.split('/').pop();
+  el.innerHTML = DOMPurify.sanitize(marked.parse(text), { FORBID_TAGS: ['form', 'style', 'input', 'button'] });
+  // Relative links and images resolve against the doc's own folder.
+  const base = new URL(f, location.href);
+  for (const a of el.querySelectorAll('a[href]')) {
+    const h = a.getAttribute('href');
+    if (/^([a-z]+:|#|\/)/i.test(h)) continue;
+    const u = new URL(h, base);
+    const rel = u.pathname.slice(new URL('.', location.href).pathname.length);
+    a.setAttribute('href', u.pathname.endsWith('.md') ? 'md.html?f=' + rel + u.hash : u.href);
+  }
+  for (const i of el.querySelectorAll('img[src]')) {
+    const s = i.getAttribute('src');
+    if (!/^([a-z]+:|\/)/i.test(s)) i.setAttribute('src', new URL(s, base).href);
+  }
+})();
+</script>
+</body>
+</html>

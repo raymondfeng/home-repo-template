@@ -1,0 +1,10 @@
+{
+ "title": "Home Repo",
+ "intro": "The record of this project: what we claim, what we read, what was said, what we plan, and what we decided.",
+ "startHere": [
+  "docs/landscape/example-source-read-2026-01-01.md"
+ ],
+ "notes": {
+  "docs/landscape/example-source-read-2026-01-01.md": "A worked example of a read: a made-up source, its archive, three checked quotes and one borrow."
+ }
+}

@@ -1,0 +1,4 @@
+The Example Method
+
+A team keeps one record of what it has decided. The record is a folder of dated Markdown files.
+A decision that is not in the record does not bind anyone. We review the record every quarter.

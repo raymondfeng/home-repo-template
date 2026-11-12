@@ -1,0 +1,6 @@
+The Example Method: a made-up source, written for this template on 2026-01-01.
+
+- source.txt: the whole source. A real capture names the URL, the fetch date, the method (curl, browser, clone at a sha) and the licence.
+
+sha256:
+f53b72a274d99f8e94c77b171708d5edbda732f29fb214b57ac0168c680aef40  source.txt

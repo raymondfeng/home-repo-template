@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library · Home Repo</title>
+<link rel="stylesheet" href="hub.css">
+</head>
+<body>
+<header><a class="site" href="./">Home Repo</a><nav><a href="./">Home</a><a href="docs.html" aria-current="page">Library</a><a href="changelog.html">Changelog</a></nav></header>
+<main>
+<h1>Library</h1>
+<form id="filters" class="filters" onsubmit="return false">
+<input id="q" type="search" placeholder="Search titles, paths and full text" autocomplete="off" aria-label="Search">
+<p class="chips" id="types"><button data-type="" aria-pressed="true">All</button><button data-type="landscape" aria-pressed="false">Read</button></p>
+<label>Changed <select id="age"><option value="">any time</option><option value="7">last 7 days</option><option value="30">last 30 days</option><option value="90">last 90 days</option></select></label>
+<label>Sort <select id="sort"><option value="updated">last changed</option><option value="added">first added</option><option value="title">title</option></select></label>
+<span id="count" class="count">1 of 1</span>
+</form>
+<ul class="list" id="library"><li data-type="landscape" data-added="2026-11-12" data-updated="2026-11-12" data-path="docs/landscape/example-source-read-2026-01-01.md"><a class="title" href="md.html?f=docs/landscape/example-source-read-2026-01-01.md">The Example Method: read (2026-01-01)</a> <span class="badge b-landscape">Read</span><p class="note">A worked example of a read: a made-up source, its archive, three checked quotes and one borrow.</p><p class="meta"><code>docs/landscape/example-source-read-2026-01-01.md</code> · updated 2026-11-12</p><p class="hit" hidden></p></li></ul>
+<p class="empty" hidden>No doc matches.</p>
+</main>
+<script src="hub.js" defer></script>
+</body>
+</html>
