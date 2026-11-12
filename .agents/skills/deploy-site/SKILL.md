@@ -56,5 +56,7 @@ attaches the domain. Do not run that second deploy until the owner confirms that
 | `EXCLUDED_IN_HUB` | A file in `EXCL` is a doc that the hub lists | Move it under `docs/assets/`, or remove it from git. Do not exclude a listed doc |
 | `LEAK`, `SYMLINK`, `EXCLUDED_PRESENT`, `… differs from <rev>` | The dist is wrong | Read the message. Never edit a gate to pass |
 | `MARKER_MISSING` | A change you meant to ship is not in the dist | Check `git merge-base --is-ancestor`; the commit may be orphaned |
+| `CONFIG` | cf's dry run built a Worker config with `workers.dev` or Version URLs on, or with the wrong domain | Stop. Do not upload. A new `CF_VERSION` may have renamed a key: read `cloudflare.config.ts` in the work folder against Cloudflare's reference |
+| `NO_ANSWER` | The upload is done, but the site's address gave no answer in five minutes | Check the address from another network. If it answers `302` there, record the deploy. If it answers `200`, treat it as `ACCESS` |
 | `the version now serving is …` | Someone deployed after the ledger's top entry | Reconcile the ledger first |
 | `ACCESS` | A path answered something other than 302 | Stop everything and tell the owner: the corpus may be public |

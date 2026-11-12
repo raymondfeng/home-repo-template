@@ -56,8 +56,13 @@ REV=$(git rev-parse HEAD)
 EMPTY_TREE=$(git hash-object -t tree /dev/null)
 BASE_DEPLOY=""
 if [ "$FIRST" = 1 ]; then
-  if grep -qE 'at deploy `[0-9a-f-]+`, HEAD `[0-9a-f]+`' DEPLOY-LEDGER.md; then die "--first, but DEPLOY-LEDGER.md already has a deploy entry"; fi
-  BASE=$EMPTY_TREE
+  # A move to a new Worker is also a first deploy: pass --first with --baseline <the last sha the old Worker served>.
+  if [ -z "$BASE" ]; then
+    if grep -qE 'at deploy `[0-9a-f-]+`, HEAD `[0-9a-f]+`' DEPLOY-LEDGER.md; then die "--first, but DEPLOY-LEDGER.md already has a deploy entry. For a move to a new Worker, add --baseline <sha>."; fi
+    BASE=$EMPTY_TREE
+  else
+    git merge-base --is-ancestor "$BASE" "$REV" || die "baseline $BASE is not an ancestor of HEAD $REV"
+  fi
 else
   LEDGER_TOP=$(grep -m1 -oE 'at deploy `[0-9a-f-]+`, HEAD `[0-9a-f]+`' DEPLOY-LEDGER.md) || die "no deploy entry in DEPLOY-LEDGER.md. For the first deploy, pass --first."
   BASE_DEPLOY=$(echo "$LEDGER_TOP" | sed -E 's/at deploy `([0-9a-f-]+)`.*/\1/')
@@ -160,7 +165,17 @@ CONFIG
 if [ -n "$ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$ACCOUNT_ID"; fi
 CF=(npx --yes "cf@$CF_VERSION")
 (cd "$WORK" && "${CF[@]}" deploy dist --dry-run) > "$WORK/cf-dry-run.log" 2>&1 || { tail -8 "$WORK/cf-dry-run.log"; die "cf deploy --dry-run failed (see $WORK/cf-dry-run.log)"; }
-echo "cf dry run: ok (${DOMAINS:-no domain on this deploy})"
+# Read back what cf will deploy. The Worker must have no address but the site's own, and none at all on the first
+# deploy of a protected site.
+python3 -I -c 'import json,sys
+c=json.load(open(sys.argv[1])); want=sys.argv[2]
+bad=[k for k in ("workersDev","previewUrls") if c.get(k) is not False]
+got=",".join(c.get("domains") or [])
+if got!=want: bad.append("domains=%r, expected %r" % (got,want))
+sys.exit("the Worker config that cf built is not the one this script wrote: "+"; ".join(bad) if bad else 0)' \
+  "$WORK/.cloudflare/output/v0/workers/default/worker.config.json" "$( [ -n "$DOMAINS" ] && echo "$HOST" )" \
+  || die "CONFIG: cf did not honour the settings (workers.dev off, Version URLs off, the domain). A new CF_VERSION may have changed a key."
+echo "cf dry run: ok (workers.dev off, Version URLs off, ${DOMAINS:-no domain on this deploy})"
 
 if [ "$DEPLOY" = 0 ]; then
   echo "DRY_RUN_OK: every gate passed; stopped before the upload. Remove the work folder when done: rm -rf $WORK"
@@ -191,9 +206,11 @@ if [ "$PROTECTED" = 1 ] && [ "$FIRST" = 1 ]; then
 elif [ "$PROTECTED" = 1 ]; then
   probe() { (cd "$DIST" && find "$@" -type f | sort | head -1); }
   PATHS=("" "md.html" "$(probe "${SHIP[0]}" -name '*.md')" "$(probe "${SHIP[@]}" -not -name '*.md')" "no-such-page")
-  status() { curl -sI --max-time 15 "$SITE_URL/$1" | head -1 | awk '{print $2}'; }
+  status() { { curl -sI --max-time 15 "$SITE_URL/$1" 2>/dev/null || true; } | head -1 | awk '{print $2}'; }
   # A new domain needs its DNS record and certificate first: wait for any answer, up to five minutes.
-  for _ in $(seq 1 30); do [ -n "$(status "")" ] && break; sleep 10; done
+  answered=0
+  for _ in $(seq 1 30); do if [ -n "$(status "")" ]; then answered=1; break; fi; sleep 10; done
+  [ "$answered" = 1 ] || die "NO_ANSWER: $SITE_URL did not answer in five minutes. The version is uploaded. The DNS record or the certificate may not be ready, or this machine may hold an old DNS answer. Check the address from another network before you record the deploy."
   fail=0
   for p in "${PATHS[@]}"; do
     code=$(status "$p")

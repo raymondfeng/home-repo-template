@@ -83,5 +83,6 @@ the first deploy, the lines for the other repos).
 ## Later changes
 
 The same steps work one at a time. To add a repo, do step 2 for that repo. To rename the site, do step 7. To move to
-another Worker, do step 8, and note the change in `DEPLOY-LEDGER.md`, because the next deploy has no baseline
-there: it runs with `--baseline <sha>` of the last commit that the old Worker served.
+another Worker, do step 8 and then the one-time setup in `RULES.md` again. The first deploy to the new Worker runs with
+`--first --baseline <sha>`, where the sha is the HEAD of the ledger's top entry, and the change is noted in the
+ledger's next entry.
