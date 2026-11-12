@@ -22,7 +22,7 @@ it explains.
 5. **Put it on the hub.** The hub lists every tracked page under `reports/` with the page's `<title>`, so give the
    page a title that says what it answers. For a one-line note under the title, add the page's path to `notes` in
    `site/manifest.json`; add it to `startHere` only if a new reader should open it first. Then run
-   `python3 -I scripts/build-hub.py` and commit the manifest and the four files the script writes, each by name.
+   `python3 -I scripts/build-hub.py` and commit the manifest and the five files the script writes, each by name.
 6. **Publish only when the message says so** ("and deploy", "share it now"), and then with the `deploy-site` skill.
 7. **End the reply** with the local path of the page, its address on the site (`<site>/reports/<topic>`) marked "live" or "after the next
    deploy", and one sentence that says what question the page answers.

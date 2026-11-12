@@ -59,15 +59,15 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `scripts/credscan.py` | A scan for credential patterns over the files you are about to commit or publish |
 | `.agents/skills/browser-harness` | A copy of the browser-harness skill (MIT, Browser Use): how the agent controls a real browser. The command itself is installed separately |
 | `scripts/update-skills.py` | Refreshes each copied skill from its upstream repo at one commit, and reports when a copy is behind. It never commits |
-| `.agents/skills/deploy-site` | Deploy the site to Cloudflare Pages through its gates. `RULES.md` holds the one-time setup and the rule behind each gate |
-| `scripts/deploy.sh` | The deploy chain: a dist pinned to HEAD, the gates, the upload, and the Access check on the new deployment. A dry run unless given `--deploy` |
-| `scripts/build-hub.py` | The hub generator. It writes `index.html` (counts, start here, what's new), `docs.html` (every doc and report, with type and age filters, a sort and full-text search), `changelog.html` (one row per deploy) and `search-index.json` |
+| `.agents/skills/deploy-site` | Deploy the site to a Cloudflare Worker through its gates. `RULES.md` holds the one-time setup and the rule behind each gate |
+| `scripts/deploy.sh` | The deploy chain: a dist pinned to HEAD, the gates, the upload with the `cf` CLI to one Worker with static assets, and the Access check. A dry run unless given `--deploy` |
+| `scripts/build-hub.py` | The hub generator. It writes `index.html` (counts, start here, what's new), `docs.html` (every doc and report, with type and age filters, a sort and full-text search), `changelog.html` (one row per deploy), `404.html` and `search-index.json` |
 | `site/manifest.json` | Optional curation for the hub: the site's title, the "Start here" list, and a one-line note for a doc. A doc with no entry still appears |
 | `hub.css`, `hub.js`, `md.html` | The hub's stylesheet and script, written by hand, and a Markdown viewer. To look at the site before a deploy, serve the repo root: `python3 -m http.server --bind 127.0.0.1` |
-| `site/_headers`, `site/_redirects` | Pages headers (archived captures are served inert) and redirects |
+| `site/_headers`, `site/_redirects` | Headers (archived captures are served inert) and redirects for the Worker's static assets |
 | `docs/diagrams/`, `scripts/build-readme-diagram.py` | The diagram above, as a light and a dark SVG, and the script that writes both |
 | `DEPLOY-LEDGER.md` | One entry per deploy. The script reads the top entry as its baseline |
-| `hooks/refuse-bare-wrangler.py` | A `PreToolUse` hook that refuses a bare `wrangler pages deploy`, with its test. `.claude/settings.json` wires it for Claude Code, and `.codex/hooks.json` for Codex |
+| `hooks/refuse-bare-deploy.py` | A `PreToolUse` hook that refuses a bare deploy command (`cf deploy`, `wrangler deploy` and two more), with its test. `.claude/settings.json` wires it for Claude Code, and `.codex/hooks.json` for Codex |
 
 ## Set it up
 
@@ -78,16 +78,16 @@ against the archive, and every meeting becomes a record with its decisions and i
    python3 -I scripts/check-quotes.py --all            # the worked example: 1 of 1 reads pass
    python3 -I scripts/check-quotes.py --all --plant    # must exit 1
    python3 -I scripts/credscan.py --controls           # controls 15/15
-   python3 -I hooks/test-refuse-bare-wrangler.py
-   python3 -I scripts/build-hub.py --check             # the four generated hub files are current
+   python3 -I hooks/test-refuse-bare-deploy.py
+   python3 -I scripts/build-hub.py --check             # the five generated hub files are current
    ```
 
 3. Start your agent in this folder and say "set up this repo". The `setup-repo` skill asks for what only you can
    decide and does the rest: what the repo is, the pointers to your other repos, the glossary, the site's title, the
    deploy settings, and whether to keep the worked example. It changes nothing outside this folder.
 4. Ask the agent to check out a URL. The `check-out` skill runs the chain.
-5. To publish the site: do the one-time Cloudflare setup in `.agents/skills/deploy-site/RULES.md`, then say "deploy".
-   The first upload needs `npx`, `rsync` and a Cloudflare login.
+5. To publish the site: do the one-time setup in `.agents/skills/deploy-site/RULES.md`, then say "deploy". The upload
+   needs Node 22.23 or later, `npx`, `rsync` and a Cloudflare login (`npx cf@<version> auth login`).
 
 The checks need Python 3.9 or later and nothing else. A scan of the whole repo reports hits in `scripts/credscan.py`
 itself: they are its own control samples. Scan the files you add, not the scanner.
@@ -116,10 +116,18 @@ it has not yet been run in Codex.
 
 ## Status of the deploy script
 
-The dry run and every gate before the upload have been run. The upload, the check for a newer deployment and the
-`302` check have run only against stand-ins for `wrangler` and `curl`, not against Cloudflare. Two things are not
-measured on a live site: the `/md` rule in `site/_headers`, and the Access steps in
-`.agents/skills/deploy-site/RULES.md`. Check both on your first deploy.
+The site deploys as one Cloudflare Worker with static assets, through the `cf` CLI, which is a beta. The script pins a
+version of it.
+
+- **Measured on Cloudflare** (2026-11-12, two throwaway Workers, `cf` `1.0.0-beta.31`): the config that the script
+  writes, the custom domain, the headers and redirects, the 404 page, the `workers.dev` address staying off, and
+  Access on the Worker answering `302` on every path, also across a new version.
+- **Run for real here:** the dry run, every gate before the upload, and `cf`'s own dry run.
+- **Run only against stand-ins for `cf` and `curl`:** the script's upload, its check for a newer deployment, and its
+  `302` check. The script as a whole has not yet deployed a real site.
+- **Not measured:** a signed-in session through Access, and a zone other than the one used.
+
+The last version that deployed to Cloudflare Pages with wrangler is the git tag `pages-wrangler`.
 
 ## Installed skills, not copied
 
@@ -155,7 +163,7 @@ skill the same way, add one entry to `VENDORED` at the top of the script.
 
 - **Search at a large scale.** The hub's search loads the text of every doc as one file. That is fine for some
   hundreds of docs. Past that, replace `search-index.json` with a real search index.
-- **A second site.** A public room for outside readers needs its own Pages project, its own deploy script and a build
+- **A second site.** A public room for outside readers needs its own Worker, its own deploy script and a build
   step that resolves every `[FILL]` marker.
 - **A deck pipeline** and **an issue board.** Add them when you need them.
 

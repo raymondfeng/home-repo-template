@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-"""Generate the site's hub from git and the files themselves: index.html, docs.html, changelog.html, search-index.json.
+"""Generate the site's hub from git and the files themselves: index.html, docs.html, changelog.html, 404.html, search-index.json.
 
-    python3 -I scripts/build-hub.py           # write the four files
+    python3 -I scripts/build-hub.py           # write the five files
     python3 -I scripts/build-hub.py --check   # exit 1 if any of them is not what this script would write
 
 - index.html: counts by type, the "Start here" list, and what is new.
 - docs.html: every tracked doc and report, with type and age filters, a sort, and search. `?type=read`, `?age=30`,
   `?sort=title` and `?q=words` work as URLs.
-- changelog.html: one row per deploy, from `git log --grep='^Deploy '`.
+- changelog.html: one row per deploy: each commit whose subject is `Deploy <id>: <what shipped>`.
+- 404.html: the page a missing path answers with. Its links start at the site root, because it is served at any path.
 - search-index.json: the text of every doc, for full-text search. docs.html loads it on the first search.
 
 The roster is `git ls-files`, so a deploy pinned to HEAD never links a file that is not in it. Dates come from git.
 A doc's type comes from its folder (a folder that TYPES does not name gives the type "Doc"), its title from its first `# ` heading, and its note from site/manifest.json or
 else from its first paragraph. So a doc with no manifest entry still appears. Nothing in the output depends on today's
 date: the pages carry each date, and site/hub.js works out what is new. Run this after the commit that adds a doc,
-then commit the four files. Never edit them by hand."""
+then commit the five files. Never edit them by hand."""
 import html, json, pathlib, re, subprocess, sys
 from html.parser import HTMLParser
 
@@ -100,17 +101,21 @@ def entries(manifest):
 
 def deploys():
     out = []
+    # A deploy commit's subject is "Deploy <id>: <what shipped>", where the id is a version id or a hash. A subject
+    # that only starts with the word "Deploy" is not a deploy.
     for ln in git("log", "--grep=^Deploy ", "--format=%cs%x09%h%x09%s").split("\n"):
         if ln:
             date, sha, subject = ln.split("\t", 2)
-            m = re.match(r"Deploy (\S+?):\s*(.*)", subject)
-            out.append(dict(date=date, sha=sha, deploy=m.group(1) if m else "", title=m.group(2) if m else subject))
+            m = re.match(r"Deploy ([0-9a-f][0-9a-f-]{6,}):\s*(.*)", subject)
+            if m:
+                out.append(dict(date=date, sha=sha, deploy=m.group(1), title=m.group(2)))
     return out
 
 
-def page(site, name, active, body):
+def page(site, name, active, body, root=""):
+    """root is "" for a page at the site root, and "/" for the 404 page, which is served at any path."""
     current = ' aria-current="page"'
-    nav = "".join(f'<a href="{h}"{current if h == active else ""}>{t}</a>'
+    nav = "".join(f'<a href="{root + h if h != "./" else (root or "./")}"{current if h == active else ""}>{t}</a>'
                   for h, t in (("./", "Home"), ("docs.html", "Library"), ("changelog.html", "Changelog")))
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -118,14 +123,14 @@ def page(site, name, active, body):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{E(name)} · {E(site)}</title>
-<link rel="stylesheet" href="hub.css">
+<link rel="stylesheet" href="{root}hub.css">
 </head>
 <body>
-<header><a class="site" href="./">{E(site)}</a><nav>{nav}</nav></header>
+<header><a class="site" href="{root or "./"}">{E(site)}</a><nav>{nav}</nav></header>
 <main>
 {body}
 </main>
-<script src="hub.js" defer></script>
+<script src="{root}hub.js" defer></script>
 </body>
 </html>
 """
@@ -182,6 +187,12 @@ def changelog(site, ds):
     return page(site, "Changelog", "changelog.html", f"<h1>Changelog</h1>\n{body}")
 
 
+def not_found(site):
+    return page(site, "Not found", "", """<h1>Not found</h1>
+<p class="lede">There is no page at this address. It may have moved, or the link may be wrong.</p>
+<p><a href="/docs.html">Search the library</a> · <a href="/">Go to the home page</a></p>""", root="/")
+
+
 def build():
     mpath = ROOT / "site" / "manifest.json"
     manifest = json.loads(mpath.read_text(encoding="utf-8")) if mpath.exists() else {}
@@ -192,7 +203,7 @@ def build():
     if missing:
         sys.exit("site/manifest.json names a path that is not a tracked doc or report: " + ", ".join(missing))
     index = [dict(p=e["path"], t=e["text"].lower()) for e in es if e["text"]]
-    return {"index.html": home(site, manifest, es, ds), "docs.html": library(site, es), "changelog.html": changelog(site, ds),
+    return {"index.html": home(site, manifest, es, ds), "docs.html": library(site, es), "changelog.html": changelog(site, ds), "404.html": not_found(site),
             "search-index.json": json.dumps(index, ensure_ascii=False, separators=(",", ":")) + "\n"}, len(es), len(ds)
 
 

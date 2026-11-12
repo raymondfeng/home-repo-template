@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
-"""PreToolUse hook (Bash), for Claude Code and for Codex: refuse a bare `wrangler pages deploy` in this repo.
+"""PreToolUse hook (Bash), for Claude Code and for Codex: refuse a bare deploy command in this repo.
 
-The site deploys only through the script that runs its gates (scripts/deploy.sh, the deploy-site skill). A bare deploy skips
-them: run from the repo root it would ship node_modules and .claude/. Exit 2 blocks the call and shows the reason to
-the agent. This is the pattern for any outward-facing command: copy the file and change the regex.
+The site deploys only through the script that runs its gates (scripts/deploy.sh, the deploy-site skill). A bare deploy
+skips them: run from the repo root it would ship node_modules, .agents/ and every draft. Four commands are refused:
+`cf deploy`, `wrangler deploy`, `wrangler versions upload` and `wrangler pages deploy`, with or without npx. Exit 2
+blocks the call and shows the reason to the agent. A script that calls cf inside it is not affected: the hook sees
+only the command. This is the pattern for any outward-facing command: copy the file and change the regex.
 
 It is a guard against an accident by a cooperative agent, not a security boundary: a regex over a shell command can be
 bypassed (a here-string fed to a shell, an evaluator other than `-c`). The boundary is the credential. Keep the deploy
-token out of the agent's environment, and let scripts/deploy.sh or CI obtain it. A script that calls wrangler inside it is not affected: the hook sees only the command."""
+token out of the agent's environment, and let scripts/deploy.sh or CI obtain it."""
 import json, re, sys
 
-FLAGS = r"(?:\s+-{1,2}[\w-]+(?:[ =](?!pages\b|deploy\b)[^\s;&|]+)?)*"
+FLAGS = r"(?:\s+-{1,2}[\w-]+(?:[ =](?!pages\b|deploy\b|versions\b|upload\b)[^\s;&|]+)?)*"
+RUNNER = r"(?:(?:npx|bunx|(?:pnpm|yarn|npm)\s+(?:dlx|exec))" + FLAGS + r"\s+)?"
 BARE = re.compile(r"(?:^|[;&|(`\n]|\$\(|(?:\s-[A-Za-z]*c|\beval)\s+[\"']|\bthen\b|\bdo\b|\belse\b|\bexec\b|\bsudo\b)\s*(?:\w+=\S*\s+)*"
-                  r"(?:(?:npx|bunx|(?:pnpm|yarn|npm)\s+(?:dlx|exec))" + FLAGS + r"\s+)?(?:\S*/)?wrangler(?:@\S+)?"
-                  + FLAGS + r"\s+pages" + FLAGS + r"\s+deploy\b")
+                  + RUNNER + r"(?:(?:\S*/)?wrangler(?:@\S+)?" + FLAGS + r"\s+(?:pages" + FLAGS + r"\s+deploy|deploy|versions" + FLAGS + r"\s+upload)"
+                  r"|(?:\S*/)?cf(?:@\S+)?" + FLAGS + r"\s+deploy)\b")
 
 
 def literal_spans(cmd):
@@ -82,8 +85,8 @@ def main():
     if not isinstance(cmd, str):
         return 0
     if refused(cmd):
-        print("Refused: a bare `wrangler pages deploy` skips the deploy gates. Deploy with "
-              "`bash scripts/deploy.sh --deploy` (the deploy-site skill). A deploy is the owner's command.", file=sys.stderr)
+        print("Refused: a bare deploy skips the deploy gates. Deploy with `bash scripts/deploy.sh --deploy` "
+              "(the deploy-site skill). A deploy is the owner's command.", file=sys.stderr)
         return 2
     return 0
 

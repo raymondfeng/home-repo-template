@@ -6,7 +6,7 @@
     "hooks": [
      {
       "type": "command",
-      "command": "python3 -I \"$(git rev-parse --show-toplevel)/hooks/refuse-bare-wrangler.py\"",
+      "command": "python3 -I \"$(git rev-parse --show-toplevel)/hooks/refuse-bare-deploy.py\"",
       "statusMessage": "Checking for a bare deploy"
      }
     ]

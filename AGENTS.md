@@ -12,8 +12,8 @@ a placeholder as a fact you do not have.
 `<One paragraph: what the company or project is, and that this repo is its record, not its product code.>`
 
 There is no test suite. The checks are the scripts under `scripts/` and the hook under `hooks/`
-(wired for Claude Code in `.claude/settings.json` and for Codex in `.codex/hooks.json`). Six
-files are generated: `index.html`, `docs.html`, `changelog.html` and `search-index.json` by `build-hub.py`, and the
+(wired for Claude Code in `.claude/settings.json` and for Codex in `.codex/hooks.json`). Seven
+files are generated: `index.html`, `docs.html`, `changelog.html`, `404.html` and `search-index.json` by `build-hub.py`, and the
 two files under `docs/diagrams/` by `build-readme-diagram.py`. Never edit them by hand.
 To change what the hub says about a doc, edit the doc or `site/manifest.json`, then run `python3 -I scripts/build-hub.py`.
 
@@ -99,20 +99,22 @@ A failed check is a stop. Report it with its output. End a long run with three h
 
 ## Deployment and protection
 
-The site is one Cloudflare Pages project: the generated hub (a home page, a library with filters and search, and a
+The site is one Cloudflare Worker with static assets, deployed with the `cf` CLI: the generated hub (a home page, a library with filters and search, and a
 changelog), `md.html`, `docs/` and `reports/`. A doc's type badge on the hub comes from its folder, so a doc in the
 wrong folder shows the wrong badge. Deploy only through the
 `deploy-site` skill (`bash scripts/deploy.sh`: a dry run unless given `--deploy`, which is the owner's command). A
-hook refuses a bare `wrangler pages deploy`. The rules are in `.agents/skills/deploy-site/RULES.md`, and the record
+hook refuses a bare `cf deploy` or `wrangler deploy`. The rules are in `.agents/skills/deploy-site/RULES.md`, and the record
 of every deploy is `DEPLOY-LEDGER.md`. Add a new deploy rule there, not here.
 
 Two facts matter outside a deploy too:
 
-- If the corpus is private, everything Cloudflare serves it from must sit behind Access: the custom domain and every
-  `<hash>.<project>.pages.dev` address. After each deploy the new address must answer `302`, never `200`.
-- A site with a fallback page answers `200` for a missing path. Check a page's `<title>`, never its status code.
+- If the corpus is private, Access is on the Worker itself, which covers every address the Worker has. The Worker's
+  `workers.dev` address and its Version URLs are off. After each deploy the site must answer `302` to a request that
+  is not signed in, never `200`.
+- A missing path answers `404`. Through Access, a signed-out request gets `302` for every path, so check a page by a
+  marker in its body.
 
-**Current deploy:** `<none yet. After each deploy, replace this line with the hash, the HEAD sha and the file count.>`
+**Current deploy:** `<none yet. After each deploy, replace this line with the version id, the HEAD sha and the file count.>`
 
 ## Skills
 

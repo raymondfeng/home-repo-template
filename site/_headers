@@ -1,6 +1,6 @@
-# Cloudflare Pages headers. scripts/deploy.sh copies this file to the root of the dist.
-# Write each pattern with ONE splat, at the END. Pages redirects *.html to the address without the extension, and
-# redirects run before headers, so a pattern that ends in ".html" puts its headers on the redirect.
+# Headers for the Worker's static assets. scripts/deploy.sh copies this file to the root of the dist.
+# Write each pattern with ONE splat, at the END. A path that ends in .html redirects to the path without it, and a
+# pattern that ends in ".html" puts its headers on that redirect.
 
 # Archived captures of outside sources. They keep the origin's own scripts by design (the raw body is what the quote
 # check reads). Served from this site they must be inert: no script, no fetch, nothing loaded from another origin.
@@ -10,8 +10,7 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
 
-# The Markdown viewer. Pages serves md.html at /md, so the pattern names that path. The two scripts it loads come from
-# cdn.jsdelivr.net with an integrity hash; the page's own script is inline. Measure this header in a browser after the
-# first deploy (RULES.md, Build rules).
+# The Markdown viewer. md.html is served at /md, so the pattern names that path. The two scripts it loads come from
+# cdn.jsdelivr.net with an integrity hash; the page's own script is inline.
 /md
   Content-Security-Policy: default-src 'self'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'

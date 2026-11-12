@@ -59,6 +59,6 @@
 <text x="520.0" y="498.0" text-anchor="middle" font-size="12" fill="#59636e">for each</text>
 <rect x="700" y="410" width="200" height="110" rx="6" fill="#ffffff" stroke="#d1d9e0"/>
 <text x="800.0" y="452.0" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2328">Site</text>
-<text x="800.0" y="470.0" text-anchor="middle" font-size="12" fill="#59636e">Cloudflare Pages,</text>
+<text x="800.0" y="470.0" text-anchor="middle" font-size="12" fill="#59636e">a Cloudflare Worker,</text>
 <text x="800.0" y="488.0" text-anchor="middle" font-size="12" fill="#59636e">optional</text>
 </svg>

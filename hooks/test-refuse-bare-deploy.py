@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Cases for refuse-bare-wrangler.py: python3 -I hooks/test-refuse-bare-wrangler.py (exit 1 on any wrong verdict).
+"""Cases for refuse-bare-deploy.py: python3 -I hooks/test-refuse-bare-deploy.py (exit 1 on any wrong verdict).
 The CLI name is built by concatenation so that the hook does not refuse the command that edits or runs this file."""
 import json, pathlib, subprocess, sys
-W, HOOK = "wran" + "gler", pathlib.Path(__file__).with_name("refuse-bare-wrangler.py")
+W, HOOK = "wran" + "gler", pathlib.Path(__file__).with_name("refuse-bare-deploy.py")
 BLOCK = [f"npx --yes {W} pages deploy $DIST --project-name my-site", f"cd x && npx {W} pages deploy d",
          f"{W} pages deploy dist", f"FOO=1 npx -y {W}@4.1 pages deploy d", f"node_modules/.bin/{W} pages deploy d",
          f"pnpm dlx {W} pages deploy d", f"npx {W} --cwd /tmp/d pages deploy .", f"npx {W} pages --config x deploy d",
@@ -16,7 +16,15 @@ BLOCK = [f"npx --yes {W} pages deploy $DIST --project-name my-site", f"cd x && n
          f"bash <<'EOF'\nnpx {W} pages deploy d\nEOF", f"cat <<'EOF'\nnpx {W} pages deploy d",
          f"echo $'it\\'s'; npx {W} pages deploy d",
          f"cat <<'EOF' | sh\nnpx {W} pages deploy d\nEOF", f"echo x)#'\nnpx {W} pages deploy d\n'"]
-ALLOW = ["bash scripts/deploy.sh --deploy", f'grep -n "{W} pages deploy" AGENTS.md',
+# The Worker commands: cf deploy, wrangler deploy and wrangler versions upload, with the same shell shapes.
+BLOCK += ["cf deploy dist", "npx cf deploy dist", "npx --yes cf@1.0.0-beta.31 deploy dist --message x", "cd w && cf deploy",
+          "CLOUDFLARE_ACCOUNT_ID=x npx cf deploy dist", "bash -c 'npx cf deploy dist'", "node_modules/.bin/cf deploy",
+          "cf --profile work deploy dist", f"npx {W} deploy", f"{W} deploy --config x.jsonc", f"npx --yes {W}@4 deploy",
+          f"{W} versions upload", f"npx {W} versions --x y upload", f"echo ok; {W} deploy"]
+ALLOW = ["cf deploy".join(["echo '", "'"]), "npx cf@1.0.0-beta.31 workers deployments list --worker x", "cf workers scripts search --name x",
+         "cf zero-trust access applications create --body '{}'", "cf docs search deploy", f"npx {W} deployments list --json",
+         f"{W} versions list", "git commit -m 'cf deploy notes'", "grep -n 'cf deploy' scripts/deploy.sh", "scf deploy", "cf deployments",
+         "bash scripts/deploy.sh --deploy", f'grep -n "{W} pages deploy" AGENTS.md',
          f"npx --yes {W} pages deployment list --project-name my-site", f"git log --grep {W}",
          f"echo 'see {W} pages deploy in AGENTS.md'",
          f"cat > d.md <<'EOF'\n| Hook | any `{W} pages deploy` |\n{W} pages deploy x\nEOF\nwc -l d.md",

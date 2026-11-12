@@ -68,7 +68,7 @@ def svg(c):
     p += box(80, 430, 160, 90, "Product repo", ["code, tests,", "its own AGENTS.md"], c)
     p += box(260, 430, 160, 90, "Library repo", ["its own rules", "and history"], c)
     p += box(440, 430, 160, 90, "More repos", ["one pointer", "for each"], c)
-    p += box(700, 410, 200, 110, "Site", ["Cloudflare Pages,", "optional"], c)
+    p += box(700, 410, 200, 110, "Site", ["a Cloudflare Worker,", "optional"], c)
     return "\n".join(p + ["</svg>"]) + "\n"
 
 

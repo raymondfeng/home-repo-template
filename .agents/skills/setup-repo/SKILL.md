@@ -39,10 +39,11 @@ owner only for decisions. Change nothing outside this repo.
    `docs/landscape/example-source-read-2026-01-01.md` and `docs/assets/example-source-2026-01-01/`, empty the list
    in `scripts/quote-reads.json` to `[]`, and remove its path from `startHere` and `notes` in `site/manifest.json`.
 7. **The site.** Set `title` and `intro` in `site/manifest.json`. Then run `python3 -I scripts/build-hub.py` and
-   commit the four files it writes. If the owner does not want a site, stop here for the site: skip step 8, and say
+   commit the five files it writes. If the owner does not want a site, stop here for the site: skip step 8, and say
    in `AGENTS.md` → "Deployment and protection" that the site is not deployed.
-8. **The deploy.** Ask three things: the Pages project name, the address people will open, and whether the site is
-   private. Set `PROJECT`, `SITE_URL` and `PROTECTED` at the top of `scripts/deploy.sh`. Then give the owner the
+8. **The deploy.** Ask four things: the Worker's name, the address people will open (its hostname must be in a zone
+   of the owner's Cloudflare account), whether the site is private, and the account id if the login has more than one
+   account. Set `WORKER`, `SITE_URL`, `PROTECTED` and `ACCOUNT_ID` at the top of `scripts/deploy.sh`. Then give the owner the
    one-time setup in `.agents/skills/deploy-site/RULES.md`: those steps are the owner's to do, in the Cloudflare
    dashboard and with a Cloudflare login. Run `bash scripts/deploy.sh --first` as a dry run and report its last line.
    Do not run `--deploy`: the first upload is the owner's command, through the `deploy-site` skill.
@@ -51,7 +52,7 @@ owner only for decisions. Change nothing outside this repo.
    to `.agents/skills/browser-harness/references/install.md`. Do not install it yourself. Then run
    `python3 -I scripts/update-skills.py --check` and report whether the copied skill is behind upstream. Do not update
    it without the owner's word.
-10. **The hook.** If the owner does not deploy with wrangler, ask whether to remove the hook from
+10. **The hook.** If the owner does not deploy with `cf` or wrangler, ask whether to remove the hook from
    `.claude/settings.json` and `.codex/hooks.json`, or to change its pattern to the owner's deploy command. Run the hook's test after a change.
 11. **The licence.** The template's `LICENSE` names the template's author. Leave the `LICENSE` under
     `.agents/skills/browser-harness/` as it is: it belongs to that skill. Ask what the owner wants for this repo:
@@ -62,7 +63,7 @@ owner only for decisions. Change nothing outside this repo.
     python3 -I scripts/check-quotes.py --selftest
     python3 -I scripts/check-quotes.py --all     # skip if quote-reads.json is empty
     python3 -I scripts/credscan.py --controls
-    python3 -I hooks/test-refuse-bare-wrangler.py
+    python3 -I hooks/test-refuse-bare-deploy.py
     python3 -I scripts/build-hub.py --check
     ```
 
@@ -82,5 +83,5 @@ the first deploy, the lines for the other repos).
 ## Later changes
 
 The same steps work one at a time. To add a repo, do step 2 for that repo. To rename the site, do step 7. To move to
-another Pages project, do step 8, and note the change in `DEPLOY-LEDGER.md`, because the next deploy has no baseline
-there: it runs with `--baseline <sha>` of the last commit that the old project served.
+another Worker, do step 8, and note the change in `DEPLOY-LEDGER.md`, because the next deploy has no baseline
+there: it runs with `--baseline <sha>` of the last commit that the old Worker served.
