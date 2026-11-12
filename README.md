@@ -55,7 +55,7 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `.claude/skills/check-out` | Read an outside source into an archive, a read doc and a table of borrows |
 | `.claude/skills/capture-sync` | Turn a meeting or a chat into a record with rulings, proposals and todos |
 | `.claude/skills/share-report` | Build a page from a doc and check it by eye |
-| `scripts/check_quotes.py` | Checks each quote in a doc as a fixed string against its archive. `scripts/quote-reads.json` lists every read |
+| `scripts/check-quotes.py` | Checks each quote in a doc as a fixed string against its archive. `scripts/quote-reads.json` lists every read |
 | `scripts/credscan.py` | A scan for credential patterns over the files you are about to commit or publish |
 | `.claude/skills/browser-harness` | A copy of the browser-harness skill (MIT, Browser Use): how the agent controls a real browser. The command itself is installed separately |
 | `scripts/update-skills.py` | Refreshes each copied skill from its upstream repo at one commit, and reports when a copy is behind. It never commits |
@@ -75,8 +75,8 @@ against the archive, and every meeting becomes a record with its decisions and i
 2. Run the checks. All five must pass:
 
    ```bash
-   python3 -I scripts/check_quotes.py --all            # the worked example: 1 of 1 reads pass
-   python3 -I scripts/check_quotes.py --all --plant    # must exit 1
+   python3 -I scripts/check-quotes.py --all            # the worked example: 1 of 1 reads pass
+   python3 -I scripts/check-quotes.py --all --plant    # must exit 1
    python3 -I scripts/credscan.py --controls           # controls 15/15
    python3 -I .claude/hooks/test_refuse_bare_wrangler.py
    python3 -I scripts/build-hub.py --check             # the four generated hub files are current

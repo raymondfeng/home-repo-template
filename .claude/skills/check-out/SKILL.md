@@ -30,7 +30,7 @@ discipline. This skill puts them in order.
    you read. Quote as `*"…"*`. Tag every absence claim and every number DO-NOT-CITE until you have checked it in the
    archive. A spoken number stays DO-NOT-CITE. A vendor's figure is "X says".
 4. **Check every quote:**
-   `python3 -I scripts/check_quotes.py --doc <read> --archive docs/assets/<topic>-<date> [--source …] [--git …]`.
+   `python3 -I scripts/check-quotes.py --doc <read> --archive docs/assets/<topic>-<date> [--source …] [--git …]`.
    On a miss, fix the doc, never the check. Run it once more with `--plant`: it must fail. Then add the read's
    arguments to `scripts/quote-reads.json`, so that `--all` covers it.
 5. **Borrows.** Write a table with IDs (two letters from the source plus a number): what the source does, what we
@@ -48,4 +48,4 @@ discipline. This skill puts them in order.
 | Quoting from a summarizer's output | Quote from the archive; the summarizer drops and invents sentences |
 | "X has no Y" from a docs index | Read the page and the repo; say which one in the provenance line |
 | A regex over HTML, `.pptx` or JSON | A parser, proved on a string you know is present |
-| A new quote script for each read | `check_quotes.py` plus one `quote-reads.json` entry |
+| A new quote script for each read | `check-quotes.py` plus one `quote-reads.json` entry |

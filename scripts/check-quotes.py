@@ -5,13 +5,13 @@ A quote must be a substring of ONE source file after both
 sides go through `norm()`. When a new miss shape turns up, decide whether the doc is wrong or the source is; change
 `norm()` only for an encoding difference that is not a misquote, and never loosen the match to pass one doc.
 
-    python3 -I scripts/check_quotes.py --doc docs/landscape/x-read-2026-10-24.md --archive docs/assets/x-2026-10-24
-    python3 -I scripts/check_quotes.py --doc D --archive A --source docs/design/y.md --svg projects/p/svg_output/02_x.svg \\
+    python3 -I scripts/check-quotes.py --doc docs/landscape/x-read-2026-10-24.md --archive docs/assets/x-2026-10-24
+    python3 -I scripts/check-quotes.py --doc D --archive A --source docs/design/y.md --svg projects/p/svg_output/02_x.svg \\
         --git ../other-repo@4611a8d95:src/x.ts --expect-files 26
-    python3 -I scripts/check_quotes.py --all       # every read in scripts/quote-reads.json
-    python3 -I scripts/check_quotes.py ... --plant # prove the check fails on a planted quote
-    python3 -I scripts/check_quotes.py --selftest  # prove norm() still folds encodings and still catches misquotes
-    python3 -I scripts/check_quotes.py --read check-example-quotes     # one read, by its name in scripts/quote-reads.json
+    python3 -I scripts/check-quotes.py --all       # every read in scripts/quote-reads.json
+    python3 -I scripts/check-quotes.py ... --plant # prove the check fails on a planted quote
+    python3 -I scripts/check-quotes.py --selftest  # prove norm() still folds encodings and still catches misquotes
+    python3 -I scripts/check-quotes.py --read check-example-quotes     # one read, by its name in scripts/quote-reads.json
 
 Sources: every file under each --archive (recursive), minus self-authored files (SNAPSHOT.txt, CENSUS.txt, QUOTES*) and
 binaries, plus each --source file, the text of each --svg slide, and each --git file at its pinned revision (a slide's text for *.svg).
@@ -38,7 +38,7 @@ STYLES = {
     "blockquote": None,  # blockquotes() splits the doc; no regex
 }
 ELISION = re.compile(r"\.\.\.|…")
-PLANTED = "This sentence was planted by check_quotes.py and appears in no source."
+PLANTED = "This sentence was planted by check-quotes.py and appears in no source."
 
 
 def norm(s):

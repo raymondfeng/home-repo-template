@@ -58,7 +58,7 @@ word and its date: `<topic>-read-2026-01-31.md`.
   string you know is present.
 - **Archive the full raw body** of each source under `docs/assets/<topic>-<date>/`, with a `SNAPSHOT.txt` (URL, date,
   method, sha256).
-- **Check every quote** as a fixed string against the archive: `python3 -I scripts/check_quotes.py`. On a miss, fix the
+- **Check every quote** as a fixed string against the archive: `python3 -I scripts/check-quotes.py`. On a miss, fix the
   doc. Never loosen the check.
 - **A spoken number is not citable.** A vendor's figure is "X says".
 - **Tag first.** Mark an unverified number or absence claim DO-NOT-CITE when you write it, and remove the tag only

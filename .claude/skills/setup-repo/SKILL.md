@@ -59,8 +59,8 @@ owner only for decisions. Change nothing outside this repo.
 12. **Check.** Run each line and report the result:
 
     ```bash
-    python3 -I scripts/check_quotes.py --selftest
-    python3 -I scripts/check_quotes.py --all     # skip if quote-reads.json is empty
+    python3 -I scripts/check-quotes.py --selftest
+    python3 -I scripts/check-quotes.py --all     # skip if quote-reads.json is empty
     python3 -I scripts/credscan.py --controls
     python3 -I .claude/hooks/test_refuse_bare_wrangler.py
     python3 -I scripts/build-hub.py --check
