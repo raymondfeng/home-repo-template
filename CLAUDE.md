@@ -117,4 +117,5 @@ settings later), `check-out` (read an outside source into an archive, a read doc
 borrows), `capture-sync` (turn a meeting or a chat into a record), `share-report` (build a page for a reader), `deploy-site`
 (publish the site through its gates).
 One skill is a copy from outside and is not edited here: `browser-harness` (how to control a real browser; the command
-is installed for the user, see `SOURCE.md` beside it). `README.md` lists the installed skills that the others call.
+is installed for the user, see `SOURCE.md` beside it). Update it only with `python3 -I scripts/update-skills.py`, and
+read the diff before you commit it. `README.md` lists the installed skills that the others call.

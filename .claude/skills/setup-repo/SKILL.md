@@ -47,8 +47,10 @@ owner only for decisions. Change nothing outside this repo.
    dashboard and with a Cloudflare login. Run `bash scripts/deploy.sh --first` as a dry run and report its last line.
    Do not run `--deploy`: the first upload is the owner's command, through the `deploy-site` skill.
 9. **The browser.** Run `command -v browser-harness`. If it prints nothing, tell the owner that `check-out` cannot read
-   a client-rendered source and `share-report` cannot do its visual check until the command is installed, and give the
-   link in `.claude/skills/browser-harness/SOURCE.md`. Do not install it yourself.
+   a client-rendered source and `share-report` cannot do its visual check until the command is installed, and point
+   to `.claude/skills/browser-harness/references/install.md`. Do not install it yourself. Then run
+   `python3 -I scripts/update-skills.py --check` and report whether the copied skill is behind upstream. Do not update
+   it without the owner's word.
 10. **The hook.** If the owner does not deploy with wrangler, ask whether to remove the hook from
    `.claude/settings.json` or to change its pattern to the owner's deploy command. Run the hook's test after a change.
 11. **The licence.** The template's `LICENSE` names the template's author. Leave the `LICENSE` under

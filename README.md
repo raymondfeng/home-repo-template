@@ -58,6 +58,7 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `scripts/check_quotes.py` | Checks each quote in a doc as a fixed string against its archive. `scripts/quote-reads.json` lists every read |
 | `scripts/credscan.py` | A scan for credential patterns over the files you are about to commit or publish |
 | `.claude/skills/browser-harness` | A copy of the browser-harness skill (MIT, Browser Use): how the agent controls a real browser. The command itself is installed separately |
+| `scripts/update-skills.py` | Refreshes each copied skill from its upstream repo at one commit, and reports when a copy is behind. It never commits |
 | `.claude/skills/deploy-site` | Deploy the site to Cloudflare Pages through its gates. `RULES.md` holds the one-time setup and the rule behind each gate |
 | `scripts/deploy.sh` | The deploy chain: a dist pinned to HEAD, the gates, the upload, and the Access check on the new deployment. A dry run unless given `--deploy` |
 | `scripts/build-hub.py` | The hub generator. It writes `index.html` (counts, start here, what's new), `docs.html` (every doc and report, with type and age filters, a sort and full-text search), `changelog.html` (one row per deploy) and `search-index.json` |
@@ -113,9 +114,20 @@ Check each source's licence before you copy a skill into a repo that you share.
 
 One skill from outside is copied in, because two of this repo's skills depend on it: `browser-harness`
 (`.claude/skills/browser-harness/`, MIT, from [browser-use/browser-harness](https://github.com/browser-use/browser-harness)
-at a pinned commit; `SOURCE.md` there has the commit and the update steps). The skill tells the agent how to drive your
-own Chrome over CDP. It does not install the `browser-harness` command: install that once for your user, following the
-tool's `install.md`. `check-out` uses it for sources that render in the client, and `share-report` for the visual check.
+at one commit, which `SOURCE.md` there records). The skill tells the agent how to drive your own Chrome over CDP. It
+does not install the `browser-harness` command: install that once for your user, following `references/install.md` in
+that folder. `check-out` uses it for sources that render in the client, and `share-report` for the visual check.
+
+To update a copied skill:
+
+```bash
+python3 -I scripts/update-skills.py --check   # is the copy behind upstream?
+python3 -I scripts/update-skills.py           # fetch the newest upstream commit and rewrite the copy
+git diff .claude/skills/                      # read it: a skill is instructions that the agent follows
+```
+
+The script never commits, so an upstream change reaches your agent only after you have read it. To copy in another
+skill the same way, add one entry to `VENDORED` at the top of the script.
 
 ## Left out on purpose
 
