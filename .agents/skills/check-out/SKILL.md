@@ -6,7 +6,7 @@ description: Use when the owner asks to read an outside source in this repo — 
 # Check out a source
 
 A read here is evidence: other docs cite it. So the archive comes first, every quote is checked against it, and a
-claim that something is absent is the claim most likely to be wrong. The rules are in `CLAUDE.md` → Capture
+claim that something is absent is the claim most likely to be wrong. The rules are in `AGENTS.md` → Capture
 discipline. This skill puts them in order.
 
 ## The chain
@@ -36,7 +36,7 @@ discipline. This skill puts them in order.
 5. **Borrows.** Write a table with IDs (two letters from the source plus a number): what the source does, what we
    would take, where it goes, and the cost. Take ideas only: never code or a runtime dependency.
 6. **Offer, then stop.** Give lettered options with a recommendation: which borrows to file as issues and in which
-   repo (`CLAUDE.md` → Other Repos), and which go to a design.
+   repo (`AGENTS.md` → Other Repos), and which go to a design.
 7. **Scan the archive** before you commit it: write its file list to a scratch file and run
    `python3 -I scripts/credscan.py . <list>`. A hit is a stop: name it and propose excluding the file.
 8. **Commit** the archive and the read by explicit paths.

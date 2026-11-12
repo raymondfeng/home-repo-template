@@ -20,19 +20,19 @@ owner only for decisions. Change nothing outside this repo.
 ## The steps
 
 1. **What the repo is.** Ask for one paragraph: the project, and that this repo is its record and not its code. Write
-   it into `CLAUDE.md` → "What this repo is". Rename the heading of `README.md` and its first paragraph to match, and
+   it into `AGENTS.md` → "What this repo is". Rename the heading of `README.md` and its first paragraph to match, and
    remove the README sections that describe the template itself.
 2. **The other repos.** List the git repos beside this one (`ls ..`, then `git -C <path> remote get-url origin` and
    `git -C <path> log -1 --format=%cs`). Show the list with a recommendation for each: point at the ones with recent
-   commits. For each repo the owner accepts, write one line under `CLAUDE.md` → "Other Repos": its name, what it is,
+   commits. For each repo the owner accepts, write one line under `AGENTS.md` → "Other Repos": its name, what it is,
    its local path, its remote, and a hint if it needs one. Remove the two placeholder lines. Past about 20 repos,
    group the lines into one file per area under `repos/` and list the areas instead.
 3. **The glossary.** Ask for the three to ten terms that the project has fixed, and for each the words to avoid. Write
    them into `CONTEXT.md`. If the owner has none yet, leave the stub.
-4. **The fixed vocabulary and the rules.** Read `CLAUDE.md` → "Guardrails" with the owner. Fill the last placeholder
+4. **The fixed vocabulary and the rules.** Read `AGENTS.md` → "Guardrails" with the owner. Fill the last placeholder
    line or delete it. Ask whether any stop rule in "When to keep going and when to stop" should be stricter or looser
    for this project, and record the answer with the owner's name and the date.
-5. **The docs folders.** Show the table in `CLAUDE.md` → "Where a doc goes". A folder the project will not use may
+5. **The docs folders.** Show the table in `AGENTS.md` → "Where a doc goes". A folder the project will not use may
    go: delete its row and its folder. For a new folder, add a row, the folder, and an entry in `TYPES` in
    `scripts/build-hub.py`; a folder with no entry there still appears on the hub, with the type "Doc".
 6. **The worked example.** Ask whether to keep it for now. To remove it: delete
@@ -40,21 +40,21 @@ owner only for decisions. Change nothing outside this repo.
    in `scripts/quote-reads.json` to `[]`, and remove its path from `startHere` and `notes` in `site/manifest.json`.
 7. **The site.** Set `title` and `intro` in `site/manifest.json`. Then run `python3 -I scripts/build-hub.py` and
    commit the four files it writes. If the owner does not want a site, stop here for the site: skip step 8, and say
-   in `CLAUDE.md` → "Deployment and protection" that the site is not deployed.
+   in `AGENTS.md` → "Deployment and protection" that the site is not deployed.
 8. **The deploy.** Ask three things: the Pages project name, the address people will open, and whether the site is
    private. Set `PROJECT`, `SITE_URL` and `PROTECTED` at the top of `scripts/deploy.sh`. Then give the owner the
-   one-time setup in `.claude/skills/deploy-site/RULES.md`: those steps are the owner's to do, in the Cloudflare
+   one-time setup in `.agents/skills/deploy-site/RULES.md`: those steps are the owner's to do, in the Cloudflare
    dashboard and with a Cloudflare login. Run `bash scripts/deploy.sh --first` as a dry run and report its last line.
    Do not run `--deploy`: the first upload is the owner's command, through the `deploy-site` skill.
 9. **The browser.** Run `command -v browser-harness`. If it prints nothing, tell the owner that `check-out` cannot read
    a client-rendered source and `share-report` cannot do its visual check until the command is installed, and point
-   to `.claude/skills/browser-harness/references/install.md`. Do not install it yourself. Then run
+   to `.agents/skills/browser-harness/references/install.md`. Do not install it yourself. Then run
    `python3 -I scripts/update-skills.py --check` and report whether the copied skill is behind upstream. Do not update
    it without the owner's word.
 10. **The hook.** If the owner does not deploy with wrangler, ask whether to remove the hook from
-   `.claude/settings.json` or to change its pattern to the owner's deploy command. Run the hook's test after a change.
+   `.claude/settings.json` and `.codex/hooks.json`, or to change its pattern to the owner's deploy command. Run the hook's test after a change.
 11. **The licence.** The template's `LICENSE` names the template's author. Leave the `LICENSE` under
-    `.claude/skills/browser-harness/` as it is: it belongs to that skill. Ask what the owner wants for this repo:
+    `.agents/skills/browser-harness/` as it is: it belongs to that skill. Ask what the owner wants for this repo:
     their own notice, or no licence file in a private repo. Replace or remove the file.
 12. **Check.** Run each line and report the result:
 
@@ -62,16 +62,16 @@ owner only for decisions. Change nothing outside this repo.
     python3 -I scripts/check-quotes.py --selftest
     python3 -I scripts/check-quotes.py --all     # skip if quote-reads.json is empty
     python3 -I scripts/credscan.py --controls
-    python3 -I .claude/hooks/test-refuse-bare-wrangler.py
+    python3 -I hooks/test-refuse-bare-wrangler.py
     python3 -I scripts/build-hub.py --check
     ```
 
     Then search for placeholders that are left, and list each one:
 
     ```bash
-    grep -n '`<[A-Za-z]' CLAUDE.md CONTEXT.md
+    grep -n '`<[A-Za-z]' AGENTS.md CONTEXT.md
     ```
-13. **Point back.** For each repo in step 2, propose one line for its own `CLAUDE.md` that names this repo as the home
+13. **Point back.** For each repo in step 2, propose one line for its own `AGENTS.md` that names this repo as the home
     of designs and decisions. Show the lines. Do not edit those repos: the owner adds each line, or tells you to.
 
 ## The final report

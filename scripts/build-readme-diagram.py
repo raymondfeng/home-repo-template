@@ -55,7 +55,7 @@ def svg(c):
     # The Home Repo
     p.append(f'<rect x="60" y="130" width="840" height="160" rx="8" fill="{c["group"]}" stroke="{c["accent"]}" stroke-width="1.5"/>')
     p.append(f'<text x="80" y="155" font-size="14" font-weight="700" fill="{c["accent"]}">Home Repo</text>')
-    for x, title, lines in ((80, "CLAUDE.md", ["rules and", "Other Repos pointers"]), (285, ".claude/skills", ["the shared", "method"]),
+    for x, title, lines in ((80, "AGENTS.md", ["rules and", "Other Repos pointers"]), (285, ".agents/skills", ["the shared", "method"]),
                             (490, "docs/", ["decisions, designs,", "reads, syncs"]), (695, "scripts/ and hooks", ["quote check,", "credential scan"])):
         p += box(x, 170, 185, 100, title, lines, c, mono=True)
     # Between the groups
@@ -65,7 +65,7 @@ def svg(c):
     # The other repos, and the site
     p.append(f'<rect x="60" y="390" width="560" height="150" rx="8" fill="{c["group"]}" stroke="{c["edge"]}" stroke-width="1.5"/>')
     p.append(f'<text x="80" y="415" font-size="14" font-weight="700" fill="{c["text"]}">Your other repos</text>')
-    p += box(80, 430, 160, 90, "Product repo", ["code, tests,", "its own CLAUDE.md"], c)
+    p += box(80, 430, 160, 90, "Product repo", ["code, tests,", "its own AGENTS.md"], c)
     p += box(260, 430, 160, 90, "Library repo", ["its own rules", "and history"], c)
     p += box(440, 430, 160, 90, "More repos", ["one pointer", "for each"], c)
     p += box(700, 410, 200, 110, "Site", ["Cloudflare Pages,", "optional"], c)

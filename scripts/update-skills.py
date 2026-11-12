@@ -15,7 +15,7 @@ access to github.com, and nothing else."""
 import io, json, pathlib, posixpath, re, sys, tarfile, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-# name: the folder under .claude/skills/ · repo: owner/name on GitHub · path: the skill's folder in that repo ·
+# name: the folder under .agents/skills/ · repo: owner/name on GitHub · path: the skill's folder in that repo ·
 # licence: the licence file in that repo, copied beside the skill
 VENDORED = [
     dict(name="browser-harness", repo="browser-use/browser-harness", path="skills/browser-harness", licence="LICENSE",
@@ -89,7 +89,7 @@ def main():
     ref = args[args.index("--ref") + 1] if "--ref" in args else "HEAD"
     behind = 0
     for v in VENDORED:
-        dest = ROOT / ".claude" / "skills" / v["name"]
+        dest = ROOT / ".agents" / "skills" / v["name"]
         sha, date = commit(v["repo"], ref)
         have = pinned(dest)
         if check:

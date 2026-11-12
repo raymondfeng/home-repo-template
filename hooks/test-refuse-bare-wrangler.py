@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cases for refuse-bare-wrangler.py: python3 -I .claude/hooks/test-refuse-bare-wrangler.py (exit 1 on any wrong verdict).
+"""Cases for refuse-bare-wrangler.py: python3 -I hooks/test-refuse-bare-wrangler.py (exit 1 on any wrong verdict).
 The CLI name is built by concatenation so that the hook does not refuse the command that edits or runs this file."""
 import json, pathlib, subprocess, sys
 W, HOOK = "wran" + "gler", pathlib.Path(__file__).with_name("refuse-bare-wrangler.py")
@@ -16,9 +16,9 @@ BLOCK = [f"npx --yes {W} pages deploy $DIST --project-name my-site", f"cd x && n
          f"bash <<'EOF'\nnpx {W} pages deploy d\nEOF", f"cat <<'EOF'\nnpx {W} pages deploy d",
          f"echo $'it\\'s'; npx {W} pages deploy d",
          f"cat <<'EOF' | sh\nnpx {W} pages deploy d\nEOF", f"echo x)#'\nnpx {W} pages deploy d\n'"]
-ALLOW = ["bash scripts/deploy.sh --deploy", f'grep -n "{W} pages deploy" CLAUDE.md',
+ALLOW = ["bash scripts/deploy.sh --deploy", f'grep -n "{W} pages deploy" AGENTS.md',
          f"npx --yes {W} pages deployment list --project-name my-site", f"git log --grep {W}",
-         f"echo 'see {W} pages deploy in CLAUDE.md'",
+         f"echo 'see {W} pages deploy in AGENTS.md'",
          f"cat > d.md <<'EOF'\n| Hook | any `{W} pages deploy` |\n{W} pages deploy x\nEOF\nwc -l d.md",
          f"echo '| `{W} pages deploy` |'"]
 bad = 0
@@ -29,5 +29,14 @@ for want, cmds in ((2, BLOCK), (0, ALLOW)):
         if rc != want:
             bad += 1
             print(f"WRONG: exit {rc}, want {want}: {cmd}")
+# The input's shape: a list of arguments is joined and checked; anything that is not a command is let through.
+SHAPES = [(2, {"tool_input": {"command": ["npx", W, "pages", "deploy", "d"]}}), (0, {"tool_input": {"command": ["ls", "-la"]}}),
+          (0, {"tool_input": {"command": None}}), (0, {"tool_input": "x"}), (0, {})]
+for want, payload in SHAPES:
+    rc = subprocess.run([sys.executable, "-I", str(HOOK)], input=json.dumps(payload), text=True, capture_output=True).returncode
+    if rc != want:
+        bad += 1
+        print(f"WRONG: exit {rc}, want {want}: {payload}")
+print(f"{len(SHAPES)} input shapes checked")
 print(f"{len(BLOCK)} refused, {len(ALLOW)} allowed, {bad} wrong")
 sys.exit(1 if bad else 0)

@@ -10,8 +10,9 @@ failed gate is a stop: report its `STOP:` line and never loosen the gate. The st
 every gate in it exits. The rule behind each gate is in `RULES.md` beside this file. The record of every deploy is
 `DEPLOY-LEDGER.md`.
 
-A `PreToolUse` hook (`.claude/hooks/refuse-bare-wrangler.py`) refuses a bare `wrangler pages deploy`. Do not work
-around it.
+A `PreToolUse` hook (`hooks/refuse-bare-wrangler.py`) refuses a bare `wrangler pages deploy`. Do not work
+around it. In Codex the hook runs only after the owner has trusted it, so follow this chain there even when nothing
+stops you.
 
 For the first deploy, do the one-time setup in `RULES.md` first, then pass `--first` in steps 4 and 5. The `302` check
 runs only after the upload. So on a private site, confirm with the owner that setup step 3 is done before you run

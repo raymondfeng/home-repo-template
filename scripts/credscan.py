@@ -5,7 +5,7 @@
     python3 -I scripts/credscan.py <dist> <list-file>  # scan the files the list names, relative to <dist>
 
 Run it over the files you are about to commit or publish. It reads bytes, so a file with NUL bytes is scanned too.
-A hit is a stop. An allowance is the owner's call: one exact string in ALLOW_EXACT, recorded in CLAUDE.md before it ships.
+A hit is a stop. An allowance is the owner's call: one exact string in ALLOW_EXACT, recorded in AGENTS.md before it ships.
 Prints the first 12 characters of a match only, never a whole key."""
 import io, os, re, sys, zipfile
 

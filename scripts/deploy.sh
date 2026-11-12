@@ -7,7 +7,7 @@
 #   scripts/deploy.sh --first                          # the first deploy: no baseline in DEPLOY-LEDGER.md yet
 #   scripts/deploy.sh --baseline <sha>                 # override the baseline HEAD (default: the ledger's top entry)
 #
-# Every gate is a stop. The rule behind each gate is in .claude/skills/deploy-site/RULES.md. Everything temporary
+# Every gate is a stop. The rule behind each gate is in .agents/skills/deploy-site/RULES.md. Everything temporary
 # lives in one folder ($WORK, printed first), and nothing is written into the repo.
 # --deploy is the owner's command. Never run it on your own initiative.
 set -euo pipefail
@@ -98,7 +98,7 @@ for e in "$DIST"/* "$DIST"/.[!.]*; do
 done
 # An environment file is refused at any depth, except the three names that are templates by convention. To ship
 # another one, the owner adds it to this list; to hold one back, put it in EXCL.
-leak=$(find "$DIST" \( -name node_modules -o -name .claude -o -name .git -o \( \( -name .env -o -name '.env.*' \) \
+leak=$(find "$DIST" \( -name node_modules -o -name .claude -o -name .agents -o -name .codex -o -name .git -o \( \( -name .env -o -name '.env.*' \) \
   ! -name .env.example ! -name .env.sample ! -name .env.template \) \) | head -3)
 [ -z "$leak" ] || die "LEAK: $leak"
 # A symlink would ship a file that the delta and the scan never read.

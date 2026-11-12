@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PreToolUse hook (Bash): refuse a bare `wrangler pages deploy` in this repo.
+"""PreToolUse hook (Bash), for Claude Code and for Codex: refuse a bare `wrangler pages deploy` in this repo.
 
 The site deploys only through the script that runs its gates (scripts/deploy.sh, the deploy-site skill). A bare deploy skips
 them: run from the repo root it would ship node_modules and .claude/. Exit 2 blocks the call and shows the reason to
@@ -75,7 +75,11 @@ def refused(cmd):
 def main():
     try:
         cmd = json.load(sys.stdin).get("tool_input", {}).get("command", "")
-    except ValueError:
+    except (ValueError, AttributeError):
+        return 0
+    if isinstance(cmd, list):  # a harness may send the command as a list of arguments
+        cmd = " ".join(str(c) for c in cmd)
+    if not isinstance(cmd, str):
         return 0
     if refused(cmd):
         print("Refused: a bare `wrangler pages deploy` skips the deploy gates. Deploy with "

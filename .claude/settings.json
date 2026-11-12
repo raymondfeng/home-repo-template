@@ -6,7 +6,7 @@
     "hooks": [
      {
       "type": "command",
-      "command": "python3 -I \"$CLAUDE_PROJECT_DIR/.claude/hooks/refuse-bare-wrangler.py\""
+      "command": "python3 -I \"$CLAUDE_PROJECT_DIR/hooks/refuse-bare-wrangler.py\""
      }
     ]
    }

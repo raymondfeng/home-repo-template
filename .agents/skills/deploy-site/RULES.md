@@ -22,9 +22,9 @@ The Cloudflare dashboard changes over time. Check each step against Cloudflare's
 
 ## Build rules
 
-- **Never deploy the repo root.** It holds `node_modules`, `.claude/`, scripts and drafts. The script builds a dist
+- **Never deploy the repo root.** It holds `node_modules`, `.claude/`, `.agents/`, scripts and drafts. The script builds a dist
   that holds only the hub pages, `md.html`, the files under `site/` and the `SHIP` folders. The `LEAK` gate checks
-  the root of the dist against that list. At any depth it refuses `node_modules`, `.claude`, `.git`, a symlink, and
+  the root of the dist against that list. At any depth it refuses `node_modules`, `.claude`, `.agents`, `.codex`, `.git`, a symlink, and
   an environment file (`.env`, `.env.*`) other than `.env.example`, `.env.sample` and `.env.template`.
 - **The dist is pinned to HEAD** (`git archive`). Another session's uncommitted drafts never ship, and neither do
   yours. Commit first, then build.

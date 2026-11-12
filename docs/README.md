@@ -1,6 +1,6 @@
 # docs
 
-The corpus. `CLAUDE.md` ("Where a doc goes") says which folder a new doc belongs in. Nothing sits at the top of this
+The corpus. `AGENTS.md` ("Where a doc goes") says which folder a new doc belongs in. Nothing sits at the top of this
 folder except this file.
 
 `landscape/example-source-read-2026-01-01.md` and `assets/example-source-2026-01-01/` are a worked example of a read

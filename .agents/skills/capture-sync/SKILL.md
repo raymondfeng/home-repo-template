@@ -19,7 +19,7 @@ proposal.
    in the provenance line that you excluded it. Never invent a number: write `**[FILL]**`.
 3. **Sweep the session** for every table, frame and one-line statement it produced, and check that each one is in the
    doc word for word.
-4. **Todos into issues.** List each todo with the repo it belongs to (`CLAUDE.md` → Other Repos), and offer to file
+4. **Todos into issues.** List each todo with the repo it belongs to (`AGENTS.md` → Other Repos), and offer to file
    them. File them when the owner says so.
 5. **Rulings and proposals.** Record a change that was asked for in words as a ruling, with a number and the words.
    List a change that was only implied as a proposal, with the current text and the proposed text, and stop.
