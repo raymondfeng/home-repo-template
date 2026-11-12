@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" lang="en" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="80" y="76" width="8" height="100" fill="#0F6B4F"/>
+  <text x="108" y="98" font-family="Arial" font-size="16" font-weight="700" letter-spacing="3" fill="#17A67A">01 · EXAMPLE DECK</text>
+  <text x="108" y="166" font-family="Georgia" font-size="44" font-weight="700" fill="#1F2328">One repository where every session starts</text>
+  <text x="108" y="250" font-family="Arial" font-size="26" fill="#59636E">A three-slide example for the deck pipeline.</text>
+  <text x="108" y="292" font-family="Arial" font-size="26" fill="#59636E">Replace it with your own deck, or delete it.</text>
+  <line x1="80" y1="656" x2="1200" y2="656" stroke="#D1D9E0" stroke-width="1"/>
+  <text x="80" y="686" font-family="Arial" font-size="14" fill="#59636E">Home Repo template</text>
+  <text x="1200" y="686" font-family="Arial" font-size="14" text-anchor="end" fill="#59636E">P01 / 03</text>
+</svg>

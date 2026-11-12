@@ -86,7 +86,7 @@ for f in "${PAGES[@]}"; do cp "$STAGE/$f" "$DIST/"; done
 for f in "${STATIC[@]}"; do cp "$STAGE/site/$f" "$DIST/$f"; done
 for d in "${SHIP[@]}"; do
   [ -d "$STAGE/$d" ] || die "SHIP folder not in HEAD: $d"
-  rsync -a --exclude .DS_Store --exclude .gitkeep "$STAGE/$d" "$DIST/"
+  rsync -a --exclude .DS_Store --exclude .gitkeep --exclude history "$STAGE/$d" "$DIST/"
 done
 for x in ${EXCL[@]+"${EXCL[@]}"}; do
   [ -e "$DIST/$x" ] || die "name exclusion not in the stage: $x (moved or renamed? fix the list)"

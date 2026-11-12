@@ -57,6 +57,9 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `.agents/skills/share-report` | Build a page from a doc and check it by eye |
 | `scripts/check-quotes.py` | Checks each quote in a doc as a fixed string against its archive. `scripts/quote-reads.json` lists every read |
 | `scripts/credscan.py` | A scan for credential patterns over the files you are about to commit or publish |
+| `.agents/skills/edit-deck` | Change, add or reorder a slide of a deck, export it to `.pptx` and publish it |
+| `projects/`, `scripts/build-deck.sh`, `docs/deck/` | The deck pipeline: a deck is a folder of hand-edited SVG slides under `projects/`; the script checks it, exports it and publishes the `.pptx` to `docs/deck/`. One three-slide example is included |
+| `.agents/skills/ppt-master` | A trimmed copy of the ppt-master skill (MIT, Hugo He): the scripts that check a deck and export it. About 12 MB |
 | `.agents/skills/browser-harness` | A copy of the browser-harness skill (MIT, Browser Use): how the agent controls a real browser. The command itself is installed separately |
 | `scripts/update-skills.py` | Refreshes each copied skill from its upstream repo at one commit, and reports when a copy is behind. It never commits |
 | `.agents/skills/deploy-site` | Deploy the site to a Cloudflare Worker through its gates. `RULES.md` holds the one-time setup and the rule behind each gate |
@@ -139,18 +142,19 @@ An earlier version deployed to Cloudflare Pages. It is the git tag `pages-versio
 
 ## Installed skills, not copied
 
-Five skills in this repo are specific to its method. They call general skills that you install for your user
+Six skills in this repo are specific to its method. They call general skills that you install for your user
 and that stay installed. With `npx skills add <source>`:
 
 | Skill | Source | Used for |
 |---|---|---|
 | `archify` | `tt-a1i/archify` | Architecture, flow and sequence diagrams for `share-report` |
 | `architecture-diagram` | `cocoon-ai/architecture-diagram-generator` | Dark-themed system diagrams |
-| `ppt-master` | `hugohe3/ppt-master` | Slide decks as SVG projects, exported to `.pptx` |
+| `ppt-master`, the full skill | `hugohe3/ppt-master` | Generating a new deck from a document, and any slide that uses an icon. The copy in this repo covers editing and export only |
 
 Check each source's licence before you copy a skill into a repo that you share.
 
-One skill from outside is copied in, because two of this repo's skills depend on it: `browser-harness`
+Two skills from outside are copied in, because this repo's skills depend on them. The second is `ppt-master`, trimmed
+to its scripts (see the table at the top and `SOURCE.md` in its folder). The first is `browser-harness`
 (`.agents/skills/browser-harness/`, MIT, from [browser-use/browser-harness](https://github.com/browser-use/browser-harness)
 at one commit, which `SOURCE.md` there records). The skill tells the agent how to drive your own Chrome over CDP. It
 does not install the `browser-harness` command: install that once for your user, following `references/install.md` in
@@ -173,9 +177,12 @@ skill the same way, add one entry to `VENDORED` at the top of the script.
   hundreds of docs. Past that, replace `search-index.json` with a real search index.
 - **A second site.** A public room for outside readers needs its own Worker, its own deploy script and a build
   step that resolves every `[FILL]` marker.
-- **A deck pipeline** and **an issue board.** Add them when you need them.
+- **Deck galleries on the site.** A published deck is listed on the hub as a file to download. Showing its slides as
+  pages needs the finalized SVGs in the dist, which the deploy script does not ship.
+- **An issue board.** Add one when you need it.
 
 ## Licence
 
-MIT. See `LICENSE`. The copied skill under `.agents/skills/browser-harness/` keeps its own MIT licence and copyright
-(Browser Use), in the `LICENSE` file beside it.
+MIT. See `LICENSE`. The two copied skills keep their own MIT licences and copyrights, in the `LICENSE` file of each
+folder: `.agents/skills/browser-harness/` (Browser Use) and `.agents/skills/ppt-master/` (Hugo He). The second also
+keeps its sponsor files, which its own integrity check requires.

@@ -38,26 +38,31 @@ owner only for decisions. Change nothing outside this repo.
 6. **The worked example.** Ask whether to keep it for now. To remove it: delete
    `docs/landscape/example-source-read-2026-01-01.md` and `docs/assets/example-source-2026-01-01/`, empty the list
    in `scripts/quote-reads.json` to `[]`, and remove its path from `startHere` and `notes` in `site/manifest.json`.
-7. **The site.** Set `title` and `intro` in `site/manifest.json`. Then run `python3 -I scripts/build-hub.py` and
-   commit the five files it writes. If the owner does not want a site, stop here for the site: skip step 8, and say
+7. **Decks.** Ask whether the project will make slide decks. If not, delete `projects/`, `docs/deck/`,
+   `scripts/build-deck.sh`, the `edit-deck` and `ppt-master` folders under `.agents/skills/`, the `ppt-master` entry in
+   `scripts/update-skills.py`, the "Decks" section of `AGENTS.md`, and the deck's note in `site/manifest.json`: the
+   copied skill is about 12 MB. If yes, keep the example deck until the first real one exists, and check that
+   `python3 -c "import pptx"` works (`pip install python-pptx`).
+8. **The site.** Set `title` and `intro` in `site/manifest.json`. Then run `python3 -I scripts/build-hub.py` and
+   commit the five files it writes. If the owner does not want a site, stop here for the site: skip step 9, and say
    in `AGENTS.md` → "Deployment and protection" that the site is not deployed.
-8. **The deploy.** Ask four things: the Worker's name, the address people will open (its hostname must be in a zone
+9. **The deploy.** Ask four things: the Worker's name, the address people will open (its hostname must be in a zone
    of the owner's Cloudflare account), whether the site is private, and the account id if the login has more than one
    account. Set `WORKER`, `SITE_URL`, `PROTECTED` and `ACCOUNT_ID` at the top of `scripts/deploy.sh`. Then give the owner the
    one-time setup in `.agents/skills/deploy-site/RULES.md`: those steps are the owner's to do, in the Cloudflare
    dashboard and with a Cloudflare login. Run `bash scripts/deploy.sh --first` as a dry run and report its last line.
    Do not run `--deploy`: the first upload is the owner's command, through the `deploy-site` skill.
-9. **The browser.** Run `command -v browser-harness`. If it prints nothing, tell the owner that `check-out` cannot read
+10. **The browser.** Run `command -v browser-harness`. If it prints nothing, tell the owner that `check-out` cannot read
    a client-rendered source and `share-report` cannot do its visual check until the command is installed, and point
    to `.agents/skills/browser-harness/references/install.md`. Do not install it yourself. Then run
    `python3 -I scripts/update-skills.py --check` and report whether the copied skill is behind upstream. Do not update
    it without the owner's word.
-10. **The hook.** If the owner does not deploy with `cf`, ask whether to remove the hook from
+11. **The hook.** If the owner does not deploy with `cf`, ask whether to remove the hook from
    `.claude/settings.json` and `.codex/hooks.json`, or to change its pattern to the owner's deploy command. Run the hook's test after a change.
-11. **The licence.** The template's `LICENSE` names the template's author. Leave the `LICENSE` under
-    `.agents/skills/browser-harness/` as it is: it belongs to that skill. Ask what the owner wants for this repo:
+12. **The licence.** The template's `LICENSE` names the template's author. Leave the `LICENSE` under
+    `.agents/skills/browser-harness/` and under `.agents/skills/ppt-master/` as it is: each belongs to that skill. Ask what the owner wants for this repo:
     their own notice, or no licence file in a private repo. Replace or remove the file.
-12. **Check.** Run each line and report the result:
+13. **Check.** Run each line and report the result:
 
     ```bash
     python3 -I scripts/check-quotes.py --selftest
@@ -72,7 +77,7 @@ owner only for decisions. Change nothing outside this repo.
     ```bash
     grep -n '`<[A-Za-z]' AGENTS.md CONTEXT.md
     ```
-13. **Point back.** For each repo in step 2, propose one line for its own `AGENTS.md` that names this repo as the home
+14. **Point back.** For each repo in step 2, propose one line for its own `AGENTS.md` that names this repo as the home
     of designs and decisions. Show the lines. Do not edit those repos: the owner adds each line, or tells you to.
 
 ## The final report
@@ -82,7 +87,7 @@ the first deploy, the lines for the other repos).
 
 ## Later changes
 
-The same steps work one at a time. To add a repo, do step 2 for that repo. To rename the site, do step 7. To move to
-another Worker, do step 8 and then the one-time setup in `RULES.md` again. The first deploy to the new Worker runs with
+The same steps work one at a time. To add a repo, do step 2 for that repo. To rename the site, do step 8. To move to
+another Worker, do step 9 and then the one-time setup in `RULES.md` again. The first deploy to the new Worker runs with
 `--first --baseline <sha>`, where the sha is the HEAD of the ledger's top entry, and the change is noted in the
 ledger's next entry.

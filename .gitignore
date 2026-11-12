@@ -6,3 +6,13 @@ node_modules/
 .claude/worktrees/
 # Visual-check output that the diagram skills leave beside a page
 reports/*.visual-check.*
+# Deck projects: only svg_output/, notes/total.md and README.md are sources. The rest is derived by build-deck.sh.
+projects/*/svg_final/
+projects/*/exports/
+projects/*/backup/
+projects/*/live_preview/
+projects/*/validation/
+projects/*/validation-*.log
+projects/*/analysis/
+projects/*/notes/*.md
+!projects/*/notes/total.md

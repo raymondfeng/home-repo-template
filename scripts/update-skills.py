@@ -16,12 +16,23 @@ import io, json, pathlib, posixpath, re, sys, tarfile, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 # name: the folder under .agents/skills/ · repo: owner/name on GitHub · path: the skill's folder in that repo ·
-# licence: the licence file in that repo, copied beside the skill
+# licence: the licence file at the root of that repo, copied beside the skill, or None when the skill's folder holds
+# its own · only: copy just these files and folders of the
+# skill (a trimmed copy), or leave it out to copy the whole folder
 VENDORED = [
     dict(name="browser-harness", repo="browser-use/browser-harness", path="skills/browser-harness", licence="LICENSE",
          holder="Browser Use", spdx="MIT",
          note="The skill tells the agent how to use the `browser-harness` command. It does not install the command. Install it\n"
               "once for your user, following `references/install.md` in this folder, and check with `command -v browser-harness`."),
+    dict(name="ppt-master", repo="hugohe3/ppt-master", path="skills/ppt-master", licence=None,
+         holder="Hugo He", spdx="MIT",
+         only=["SKILL.md", "LICENSE", "SPONSORS.md", "SPONSORS_CN.md", "requirements.txt", "scripts/", "workflows/", "templates/scaffolds/"],
+         note="This is a trimmed copy: `SKILL.md`, `scripts/`, `workflows/`, `requirements.txt`, and the licence and sponsor files,\n"
+              "which the skill's own integrity check requires and which must stay. It covers editing the slides\n"
+              "of an existing deck project and exporting it to `.pptx`. It leaves out upstream's `templates/` and `references/`\n"
+              "(about 100 MB of layouts, icons and style guides), which are needed to generate a new deck from a document and\n"
+              "for any slide that uses an icon. For those, install the full skill for your user (`npx skills add hugohe3/ppt-master`).\n"
+              "The export needs `pip install python-pptx`."),
 ]
 
 
@@ -65,8 +76,8 @@ def source_md(v, sha, date):
     return f"""# Where this skill comes from
 
 The files in this folder, except this one, are copied byte for byte from
-[{v["repo"]}](https://github.com/{v["repo"]}): the folder `{v["path"]}/` and the file `{v["licence"]}`,
-at commit `{sha}` ({date}). The licence is {v["spdx"]}, copyright {v["holder"]}; `{v["licence"]}` here is
+[{v["repo"]}](https://github.com/{v["repo"]}): {"part of " if v.get("only") else ""}the folder `{v["path"]}/`{" and the file `" + v["licence"] + "`" if v["licence"] else ""},
+at commit `{sha}` ({date}). The licence is {v["spdx"]}, copyright {v["holder"]}; `LICENSE` here is
 theirs and covers this folder only. Do not edit the copied files: an update replaces them.
 
 {v["note"]}
@@ -99,10 +110,15 @@ def main():
             continue
         members, read = archive(v["repo"], sha)
         prefix = v["path"].rstrip("/") + "/"
-        want = {p[len(prefix):]: read(p) for p, m in members.items() if p.startswith(prefix) and (m.isfile() or m.issym())}
+        only = v.get("only")
+        keep = lambda rel: not only or any(rel == o or (o.endswith("/") and rel.startswith(o)) for o in only)
+        skip = lambda rel: "__pycache__/" in rel or rel.endswith((".pyc", ".DS_Store"))
+        want = {p[len(prefix):]: read(p) for p, m in members.items()
+                if p.startswith(prefix) and (m.isfile() or m.issym()) and keep(p[len(prefix):]) and not skip(p[len(prefix):])}
         if "SKILL.md" not in want:
             sys.exit(f"{v['repo']}@{sha[:8]}: no SKILL.md under {v['path']}/")
-        want[v["licence"]] = read(v["licence"])
+        if v["licence"]:
+            want[v["licence"]] = read(v["licence"])
         want["SOURCE.md"] = source_md(v, sha, date).encode("utf-8")
         old = {p.relative_to(dest).as_posix() for p in dest.rglob("*") if p.is_file()} if dest.exists() else set()
         changed = sorted(r for r, b in want.items() if not (dest / r).exists() or (dest / r).read_bytes() != b)
