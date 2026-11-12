@@ -62,7 +62,7 @@ owner only for decisions. Change nothing outside this repo.
     python3 -I scripts/check-quotes.py --selftest
     python3 -I scripts/check-quotes.py --all     # skip if quote-reads.json is empty
     python3 -I scripts/credscan.py --controls
-    python3 -I .claude/hooks/test_refuse_bare_wrangler.py
+    python3 -I .claude/hooks/test-refuse-bare-wrangler.py
     python3 -I scripts/build-hub.py --check
     ```
 

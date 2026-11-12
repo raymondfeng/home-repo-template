@@ -78,7 +78,7 @@ against the archive, and every meeting becomes a record with its decisions and i
    python3 -I scripts/check-quotes.py --all            # the worked example: 1 of 1 reads pass
    python3 -I scripts/check-quotes.py --all --plant    # must exit 1
    python3 -I scripts/credscan.py --controls           # controls 15/15
-   python3 -I .claude/hooks/test_refuse_bare_wrangler.py
+   python3 -I .claude/hooks/test-refuse-bare-wrangler.py
    python3 -I scripts/build-hub.py --check             # the four generated hub files are current
    ```
 

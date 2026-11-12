@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cases for refuse-bare-wrangler.py: python3 -I .claude/hooks/test_refuse_bare_wrangler.py (exit 1 on any wrong verdict).
+"""Cases for refuse-bare-wrangler.py: python3 -I .claude/hooks/test-refuse-bare-wrangler.py (exit 1 on any wrong verdict).
 The CLI name is built by concatenation so that the hook does not refuse the command that edits or runs this file."""
 import json, pathlib, subprocess, sys
 W, HOOK = "wran" + "gler", pathlib.Path(__file__).with_name("refuse-bare-wrangler.py")
