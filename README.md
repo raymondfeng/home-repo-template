@@ -67,7 +67,7 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `site/_headers`, `site/_redirects` | Headers (archived captures are served inert) and redirects for the Worker's static assets |
 | `docs/diagrams/`, `scripts/build-readme-diagram.py` | The diagram above, as a light and a dark SVG, and the script that writes both |
 | `DEPLOY-LEDGER.md` | One entry per deploy. The script reads the top entry as its baseline |
-| `hooks/refuse-bare-deploy.py` | A `PreToolUse` hook that refuses a bare deploy command (`cf deploy`, `wrangler deploy` and two more), with its test. `.claude/settings.json` wires it for Claude Code, and `.codex/hooks.json` for Codex |
+| `hooks/refuse-bare-deploy.py` | A `PreToolUse` hook that refuses a bare command that changes what the site serves (`cf deploy`, `wrangler deploy`, a rollback and five more), with its test. `.claude/settings.json` wires it for Claude Code, and `.codex/hooks.json` for Codex |
 
 ## Set it up
 

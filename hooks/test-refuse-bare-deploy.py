@@ -21,9 +21,11 @@ BLOCK += ["cf deploy dist", "npx cf deploy dist", "npx --yes cf@1.0.0-beta.31 de
           "CLOUDFLARE_ACCOUNT_ID=x npx cf deploy dist", "bash -c 'npx cf deploy dist'", "node_modules/.bin/cf deploy",
           "cf --profile work deploy dist", f"npx {W} deploy", f"{W} deploy --config x.jsonc", f"npx --yes {W}@4 deploy",
           f"{W} versions upload", f"npx {W} versions --x y upload", f"echo ok; {W} deploy"]
+BLOCK += [f"{W} rollback", f"npx {W} rollback --message x", f"{W} versions deploy", f"npx {W} versions deploy --yes",
+          "cf workers deployments create --worker x", "npx cf@1 workers deployments create", "cf workers versions create --worker x"]
 ALLOW = ["cf deploy".join(["echo '", "'"]), "npx cf@1.0.0-beta.31 workers deployments list --worker x", "cf workers scripts search --name x",
          "cf zero-trust access applications create --body '{}'", "cf docs search deploy", f"npx {W} deployments list --json",
-         f"{W} versions list", "git commit -m 'cf deploy notes'", "grep -n 'cf deploy' scripts/deploy.sh", "scf deploy", "cf deployments",
+         f"{W} versions list", "git commit -m 'cf deploy notes'", "grep -n 'cf deploy' scripts/deploy.sh", "scf deploy", "cf deployments", "cf workers deployments get x", "cf workers versions list --worker x", f"{W} rollbacks", f"{W} versions view x",
          "bash scripts/deploy.sh --deploy", f'grep -n "{W} pages deploy" AGENTS.md',
          f"npx --yes {W} pages deployment list --project-name my-site", f"git log --grep {W}",
          f"echo 'see {W} pages deploy in AGENTS.md'",
