@@ -18,7 +18,7 @@ FLAGS = r"(?:\s+-{1,2}[\w-]+(?:[ =](?!deploy\b|workers\b|deployments\b|versions\
 RUNNER = r"(?:(?:npx|bunx|(?:pnpm|yarn|npm)\s+(?:dlx|exec))" + FLAGS + r"\s+)?"
 BARE = re.compile(r"(?:^|[;&|(`\n]|\$\(|(?:\s-[A-Za-z]*c|\beval)\s+[\"']|\bthen\b|\bdo\b|\belse\b|\bexec\b|\bsudo\b)\s*(?:\w+=\S*\s+)*"
                   + RUNNER + r"(?:\S*/)?cf(?:@\S+)?" + FLAGS
-                  + r"\s+(?:deploy|workers" + FLAGS + r"\s+(?:deployments|versions)" + FLAGS + r"\s+create)\b")
+                  + r"\s+(?:deploy|workers" + FLAGS + r"\s+(?:deployments|versions)" + FLAGS + r"\s+create)(?![\w-])")
 
 
 def literal_spans(cmd):
