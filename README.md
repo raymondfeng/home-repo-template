@@ -67,7 +67,7 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `site/_headers`, `site/_redirects` | Headers (archived captures are served inert) and redirects for the Worker's static assets |
 | `docs/diagrams/`, `scripts/build-readme-diagram.py` | The diagram above, as a light and a dark SVG, and the script that writes both |
 | `DEPLOY-LEDGER.md` | One entry per deploy. The script reads the top entry as its baseline |
-| `hooks/refuse-bare-deploy.py` | A `PreToolUse` hook that refuses a bare `cf deploy` and the other commands that change what the site serves, with its test. The template itself runs only `cf`; the hook also refuses the same commands of the older `wrangler` CLI, so that an installed copy cannot go around the gates. `.claude/settings.json` wires it for Claude Code, and `.codex/hooks.json` for Codex |
+| `hooks/refuse-bare-deploy.py` | A `PreToolUse` hook that refuses a bare `cf deploy` and the other commands that change what the site serves, with its test. It covers the `cf` CLI only: if another deploy tool is installed, add its commands to the hook. `.claude/settings.json` wires it for Claude Code, and `.codex/hooks.json` for Codex |
 
 ## Set it up
 
@@ -135,7 +135,7 @@ application and the sign-in all go through it, and there is no `package.json`. `
 server package installed in the project. To look at the site before a deploy, serve the repo root with Python (see
 the table above); that shows the pages, not the headers or the redirects.
 
-An earlier version deployed to Cloudflare Pages with the `wrangler` CLI. It is the git tag `pages-wrangler`.
+An earlier version deployed to Cloudflare Pages. It is the git tag `pages-version`.
 
 ## Installed skills, not copied
 

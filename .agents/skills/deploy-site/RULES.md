@@ -45,8 +45,7 @@ Access takes about ten seconds to apply, so a domain that is attached first is p
 **To take the site down:** delete the Access application
 (`npx cf@<CF_VERSION> zero-trust access applications delete <app id> --force`), then the Worker
 (`npx cf@<CF_VERSION> workers delete <WORKER>`), which also removes its domain. The first command was run in the
-measurement. The second is from `cf`'s help and was not run: there the Worker was deleted with the older `wrangler`
-CLI. Both are the owner's commands.
+measurement. The second is from `cf`'s help and was not run. Both are the owner's commands.
 
 `cf` is a beta, and Cloudflare's dashboard changes. Check each step against Cloudflare's current documentation, and
 change `CF_VERSION` only on purpose: run the dry run after a change of version.

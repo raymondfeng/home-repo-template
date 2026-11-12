@@ -10,8 +10,8 @@ failed gate is a stop: report its `STOP:` line and never loosen the gate. The st
 every gate in it exits. The rule behind each gate is in `RULES.md` beside this file. The record of every deploy is
 `DEPLOY-LEDGER.md`.
 
-A `PreToolUse` hook (`hooks/refuse-bare-deploy.py`) refuses a bare `cf deploy`, and the same commands of the older
-`wrangler` CLI. Every Cloudflare command in this chain is a `cf` command. Do not work
+A `PreToolUse` hook (`hooks/refuse-bare-deploy.py`) refuses a bare `cf deploy`. Every Cloudflare
+command in this chain is a `cf` command. Do not work
 around it. In Codex the hook runs only after the owner has trusted it, so follow this chain there even when nothing
 stops you.
 

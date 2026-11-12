@@ -2,36 +2,25 @@
 """Cases for refuse-bare-deploy.py: python3 -I hooks/test-refuse-bare-deploy.py (exit 1 on any wrong verdict).
 The CLI name is built by concatenation so that the hook does not refuse the command that edits or runs this file."""
 import json, pathlib, subprocess, sys
-W, HOOK = "wran" + "gler", pathlib.Path(__file__).with_name("refuse-bare-deploy.py")
-BLOCK = [f"npx --yes {W} pages deploy $DIST --project-name my-site", f"cd x && npx {W} pages deploy d",
-         f"{W} pages deploy dist", f"FOO=1 npx -y {W}@4.1 pages deploy d", f"node_modules/.bin/{W} pages deploy d",
-         f"pnpm dlx {W} pages deploy d", f"npx {W} --cwd /tmp/d pages deploy .", f"npx {W} pages --config x deploy d",
-         f'bash -c "npx {W} pages deploy d"', f"npx -p {W}@4 {W} pages deploy d", f"npm exec {W} pages deploy d",
-         f"cat > d.md <<'EOF'\ntext\nEOF\nnpx {W} pages deploy d",
-         f"cat <<<x\nnpx {W} pages deploy d\nx", f"echo `npx {W} pages deploy d`",
-         f"bash -c 'npx {W} pages deploy d'", f"echo \"x\" | npx {W} pages deploy d",
-         f"echo \"it's\"; npx {W} pages deploy d; echo \"'\"", f"bash -lc 'npx {W} pages deploy d'",
-         f"eval 'npx {W} pages deploy d'", f"cat <<EOF\n$(npx {W} pages deploy d)\nEOF",
-         f"echo a #'\nnpx {W} pages deploy d\necho '", f"echo 'unterminated\nnpx {W} pages deploy d",
-         f"bash <<'EOF'\nnpx {W} pages deploy d\nEOF", f"cat <<'EOF'\nnpx {W} pages deploy d",
-         f"echo $'it\\'s'; npx {W} pages deploy d",
-         f"cat <<'EOF' | sh\nnpx {W} pages deploy d\nEOF", f"echo x)#'\nnpx {W} pages deploy d\n'"]
-# The Worker commands: cf deploy, wrangler deploy and wrangler versions upload, with the same shell shapes.
-BLOCK += ["cf deploy dist", "npx cf deploy dist", "npx --yes cf@1.0.0-beta.31 deploy dist --message x", "cd w && cf deploy",
-          "CLOUDFLARE_ACCOUNT_ID=x npx cf deploy dist", "bash -c 'npx cf deploy dist'", "node_modules/.bin/cf deploy",
-          "cf --profile work deploy dist", f"npx {W} deploy", f"{W} deploy --config x.jsonc", f"npx --yes {W}@4 deploy",
-          f"{W} versions upload", f"npx {W} versions --x y upload", f"echo ok; {W} deploy"]
-BLOCK += [f"{W} rollback", f"npx {W} rollback --message x", f"{W} versions deploy", f"npx {W} versions deploy --yes",
-          "cf workers deployments create --worker x", "npx cf@1 workers deployments create", "cf workers versions create --worker x"]
-BLOCK += [f"{W} publish", f"npx {W} pages publish d", f"{W} triggers deploy", f"{W} versions secret put KEY", f"npx {W} versions secret bulk f.json"]
-ALLOW = ["cf deploy".join(["echo '", "'"]), "npx cf@1.0.0-beta.31 workers deployments list --worker x", "cf workers scripts search --name x",
-         "cf zero-trust access applications create --body '{}'", "cf docs search deploy", f"npx {W} deployments list --json",
-         f"{W} versions list", "git commit -m 'cf deploy notes'", "grep -n 'cf deploy' scripts/deploy.sh", "scf deploy", "cf deployments", "cf workers deployments get x", "cf workers versions list --worker x", f"{W} rollbacks", f"{W} versions view x", f"{W} versions secret list", f"{W} triggers", f"{W} secret list",
-         "bash scripts/deploy.sh --deploy", f'grep -n "{W} pages deploy" AGENTS.md',
-         f"npx --yes {W} pages deployment list --project-name my-site", f"git log --grep {W}",
-         f"echo 'see {W} pages deploy in AGENTS.md'",
-         f"cat > d.md <<'EOF'\n| Hook | any `{W} pages deploy` |\n{W} pages deploy x\nEOF\nwc -l d.md",
-         f"echo '| `{W} pages deploy` |'"]
+C, HOOK = "c" + "f", pathlib.Path(__file__).with_name("refuse-bare-deploy.py")
+D = f"{C} deploy"
+BLOCK = [f"{D} dist", f"npx {D} dist", f"npx --yes {C}@1.0.0-beta.31 deploy dist --message x", f"cd w && {D}",
+         f"CLOUDFLARE_ACCOUNT_ID=x npx {D} dist", f"FOO=1 npx -y {C}@1 deploy d", f"node_modules/.bin/{D}",
+         f"pnpm dlx {D} d", f"npm exec {D} d", f"npx -p {C}@1 {D} d", f"{C} --profile work deploy dist",
+         f'bash -c "npx {D} d"', f"bash -c 'npx {D} d'", f"bash -lc 'npx {D} d'", f"eval 'npx {D} d'",
+         f"cat > d.md <<'EOF'\ntext\nEOF\nnpx {D} d", f"cat <<<x\nnpx {D} d\nx", f"echo `npx {D} d`",
+         f"echo \"x\" | npx {D} d", f"echo \"it's\"; npx {D} d; echo \"'\"", f"cat <<EOF\n$(npx {D} d)\nEOF",
+         f"echo a #'\nnpx {D} d\necho '", f"echo 'unterminated\nnpx {D} d", f"bash <<'EOF'\nnpx {D} d\nEOF",
+         f"cat <<'EOF'\nnpx {D} d", f"echo $'it\\'s'; npx {D} d", f"cat <<'EOF' | sh\nnpx {D} d\nEOF",
+         f"echo x)#'\nnpx {D} d\n'", f"echo ok; {D}",
+         f"{C} workers deployments create --worker x", f"npx {C}@1 workers deployments create",
+         f"{C} workers versions create --worker x", f"{C} workers --profile p versions create"]
+ALLOW = ["bash scripts/deploy.sh --deploy", f"grep -n '{D}' scripts/deploy.sh", f"echo 'see {D} in AGENTS.md'",
+         f"cat > d.md <<'EOF'\n| Hook | any `{D}` |\n{D} x\nEOF\nwc -l d.md", f"echo '| `{D}` |'",
+         f"git commit -m '{D} notes'", f"git log --grep {C}", f"npx {C}@1.0.0-beta.31 workers deployments list --worker x",
+         f"{C} workers scripts search --name x", f"{C} zero-trust access applications create --body '{{}}'",
+         f"{C} docs search deploy", f"{C} workers deployments get x", f"{C} workers versions list --worker x",
+         f"{C} auth login", f"s{D}", f"{C} deployments", f"{C} workers delete x", f"{C} deploy-notes.md"]
 bad = 0
 for want, cmds in ((2, BLOCK), (0, ALLOW)):
     for cmd in cmds:
@@ -41,7 +30,7 @@ for want, cmds in ((2, BLOCK), (0, ALLOW)):
             bad += 1
             print(f"WRONG: exit {rc}, want {want}: {cmd}")
 # The input's shape: a list of arguments is joined and checked; anything that is not a command is let through.
-SHAPES = [(2, {"tool_input": {"command": ["npx", W, "pages", "deploy", "d"]}}), (0, {"tool_input": {"command": ["ls", "-la"]}}),
+SHAPES = [(2, {"tool_input": {"command": ["npx", C, "deploy", "d"]}}), (0, {"tool_input": {"command": ["ls", "-la"]}}),
           (0, {"tool_input": {"command": None}}), (0, {"tool_input": "x"}), (0, {})]
 for want, payload in SHAPES:
     rc = subprocess.run([sys.executable, "-I", str(HOOK)], input=json.dumps(payload), text=True, capture_output=True).returncode

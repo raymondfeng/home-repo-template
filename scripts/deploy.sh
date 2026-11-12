@@ -146,7 +146,7 @@ python3 -I scripts/credscan.py "$DIST" "$WORK/delta.txt" || die "CREDENTIAL HIT 
 echo "files: $count"
 
 # 5. The Worker's config, written into the work folder from the values at the top of this script. cf reads
-#    cloudflare.config.ts and not a Wrangler config. This one is a plain object with no import, so cf needs no install.
+#    cloudflare.config.ts. This one is a plain object with no import, so cf needs no install.
 HOST=${SITE_URL#*://}; HOST=${HOST%%/*}
 DOMAINS=""
 if [ "$PROTECTED" = 0 ] || [ "$FIRST" = 0 ]; then DOMAINS="domains: [\"$HOST\"],"; fi
