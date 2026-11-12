@@ -108,8 +108,12 @@ and that stay installed. With `npx skills add <source>`:
 | `architecture-diagram` | `cocoon-ai/architecture-diagram-generator` | Dark-themed system diagrams |
 | `ppt-master` | `hugohe3/ppt-master` | Slide decks as SVG projects, exported to `.pptx` |
 
-Check each source's licence before you copy a skill into a repo that you share. A browser tool that the agent can
-drive is also needed for client-rendered sources and for step 3 of `share-report`.
+Check each source's licence before you copy a skill into a repo that you share.
+
+A browser that the agent can drive is also needed, for sources that render in the client and for the visual check in
+`share-report`. The recommended tool is [browser-harness](https://github.com/browser-use/browser-harness): a command
+on your path that controls your own Chrome over CDP. It is not a skill and is not copied here; its `install.md` has
+the setup. Any other browser tool that can read a page's text and take a screenshot also works.
 
 ## Left out on purpose
 

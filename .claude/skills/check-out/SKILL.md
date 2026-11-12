@@ -18,7 +18,10 @@ discipline. This skill puts them in order.
      body, never by its status code.
    - A GitHub repo: clone it shallow into a scratch folder and pin the sha. Archive what you quote: the README,
      `docs/`, the source files you cite, `git log --oneline -50`, and the repo metadata.
-   - A client-rendered site: a browser and `innerText`. Copy the DOM into a page global before you slice it.
+   - A client-rendered site: a browser and `innerText`, with `browser-harness` if it is installed (`README.md`). Open
+     your own tab and close only that tab. Copy the DOM into a page global before you slice it, because the page
+     changes between calls. If the page shows the reader's account, capture it in a context with no cookies.
+     Use the browser only when a plain fetch returns a shell page.
    - A PDF: download it and read it with page ranges. Never cite a number from a summarizing fetch.
 2. **Archive the full raw body** under `docs/assets/<topic>-<date>/`: the raw HTML or PDF, a text extraction made with
    a parser, and a `SNAPSHOT.txt` with the URLs, the date, the method and the sha256 of each file. Keep each capture
