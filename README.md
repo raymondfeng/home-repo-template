@@ -67,7 +67,7 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `site/_headers`, `site/_redirects` | Headers (archived captures are served inert) and redirects for the Worker's static assets |
 | `docs/diagrams/`, `scripts/build-readme-diagram.py` | The diagram above, as a light and a dark SVG, and the script that writes both |
 | `DEPLOY-LEDGER.md` | One entry per deploy. The script reads the top entry as its baseline |
-| `hooks/refuse-bare-deploy.py` | A `PreToolUse` hook that refuses a bare command that changes what the site serves (`cf deploy`, `wrangler deploy`, a rollback and five more), with its test. `.claude/settings.json` wires it for Claude Code, and `.codex/hooks.json` for Codex |
+| `hooks/refuse-bare-deploy.py` | A `PreToolUse` hook that refuses a bare `cf deploy` and the other commands that change what the site serves, with its test. The template itself runs only `cf`; the hook also refuses the same commands of the older `wrangler` CLI, so that an installed copy cannot go around the gates. `.claude/settings.json` wires it for Claude Code, and `.codex/hooks.json` for Codex |
 
 ## Set it up
 
@@ -123,14 +123,19 @@ version of it.
   writes, the custom domain, the headers and redirects, the 404 page, the `workers.dev` address staying off, and
   Access on the Worker answering `302` on every path, also across a new version.
 - **Run for real here:** the dry run, every gate before the upload, `cf`'s own dry run, and the check that reads back
-  the Worker config that `cf` built. The site's own files were also served in wrangler's local Worker runtime and
+  the Worker config that `cf` built. The site's own files were also served in a local Worker runtime and
   opened in a browser: the library at `/docs` beside the `docs/` folder, the viewer under its security policy with no
   violation, and the 404 page at a deep path.
 - **Run only against stand-ins for `cf` and `curl`:** the script's upload, its check for a newer deployment, and its
   `302` check. The script as a whole has not yet deployed a real site.
 - **Not measured:** a signed-in session through Access, and a zone other than the one used.
 
-The last version that deployed to Cloudflare Pages with wrangler is the git tag `pages-wrangler`.
+`cf` is the only Cloudflare tool the template runs: the dry run, the upload, the deployments list, the Access
+application and the sign-in all go through it, and there is no `package.json`. `cf dev` is not used: it needs a dev
+server package installed in the project. To look at the site before a deploy, serve the repo root with Python (see
+the table above); that shows the pages, not the headers or the redirects.
+
+An earlier version deployed to Cloudflare Pages with the `wrangler` CLI. It is the git tag `pages-wrangler`.
 
 ## Installed skills, not copied
 

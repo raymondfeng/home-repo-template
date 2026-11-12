@@ -52,7 +52,7 @@ owner only for decisions. Change nothing outside this repo.
    to `.agents/skills/browser-harness/references/install.md`. Do not install it yourself. Then run
    `python3 -I scripts/update-skills.py --check` and report whether the copied skill is behind upstream. Do not update
    it without the owner's word.
-10. **The hook.** If the owner does not deploy with `cf` or wrangler, ask whether to remove the hook from
+10. **The hook.** If the owner does not deploy with `cf`, ask whether to remove the hook from
    `.claude/settings.json` and `.codex/hooks.json`, or to change its pattern to the owner's deploy command. Run the hook's test after a change.
 11. **The licence.** The template's `LICENSE` names the template's author. Leave the `LICENSE` under
     `.agents/skills/browser-harness/` as it is: it belongs to that skill. Ask what the owner wants for this repo:

@@ -103,7 +103,7 @@ The site is one Cloudflare Worker with static assets, deployed with the `cf` CLI
 changelog), `md.html`, `docs/` and `reports/`. A doc's type badge on the hub comes from its folder, so a doc in the
 wrong folder shows the wrong badge. Deploy only through the
 `deploy-site` skill (`bash scripts/deploy.sh`: a dry run unless given `--deploy`, which is the owner's command). A
-hook refuses a bare `cf deploy` or `wrangler deploy`. The rules are in `.agents/skills/deploy-site/RULES.md`, and the record
+hook refuses a bare `cf deploy`. The rules are in `.agents/skills/deploy-site/RULES.md`, and the record
 of every deploy is `DEPLOY-LEDGER.md`. Add a new deploy rule there, not here.
 
 Two facts matter outside a deploy too:
