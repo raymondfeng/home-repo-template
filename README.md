@@ -122,7 +122,10 @@ version of it.
 - **Measured on Cloudflare** (2026-11-12, two throwaway Workers, `cf` `1.0.0-beta.31`): the config that the script
   writes, the custom domain, the headers and redirects, the 404 page, the `workers.dev` address staying off, and
   Access on the Worker answering `302` on every path, also across a new version.
-- **Run for real here:** the dry run, every gate before the upload, and `cf`'s own dry run.
+- **Run for real here:** the dry run, every gate before the upload, `cf`'s own dry run, and the check that reads back
+  the Worker config that `cf` built. The site's own files were also served in wrangler's local Worker runtime and
+  opened in a browser: the library at `/docs` beside the `docs/` folder, the viewer under its security policy with no
+  violation, and the 404 page at a deep path.
 - **Run only against stand-ins for `cf` and `curl`:** the script's upload, its check for a newer deployment, and its
   `302` check. The script as a whole has not yet deployed a real site.
 - **Not measured:** a signed-in session through Access, and a zone other than the one used.
