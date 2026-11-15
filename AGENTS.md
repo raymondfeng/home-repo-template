@@ -48,6 +48,7 @@ word and its date: `<topic>-read-2026-01-31.md`.
 | `decisions/` | What did we decide, and why? |
 | `registers/` | Append-only shared lists |
 | `deck/` | What do we put in front of an audience? The published `.pptx` of each deck, and its narrative |
+| `video/` | The published file of each video |
 | `assets/<topic>-<date>/` | The raw capture behind a read |
 | `diagrams/` | Static SVG figures that a doc or the README embeds: no script, no web font |
 
@@ -110,6 +111,16 @@ for any change. Three rules hold outside that skill too:
 - A slide that is added, removed or moved changes five things together: the file numbers, the footers, the kickers,
   the notes headings, and any "see slide N". `build-deck.sh` checks the notes and the footers; the rest is yours.
 
+## Videos
+
+A video is a folder under `video/`: an HTML project that the `hyperframes` command renders, checked and rendered by
+`bash scripts/build-video.sh video/<name>` and published to `docs/video/` with `--publish`. Use the `make-video` skill
+for any change. Three rules hold outside that skill too:
+
+- The order is brief, storyboard, build, review, publish. A scene is not built before its storyboard row is agreed.
+- A real screen is shown from a real capture. Nobody draws a replacement.
+- A cut is reviewed from its contact sheet before it is published, and the three largest defects are written down.
+
 ## Deployment and protection
 
 The site is one Cloudflare Worker with static assets, deployed with the `cf` CLI: the generated hub (a home page, a library with filters and search, and a
@@ -134,8 +145,9 @@ Two facts matter outside a deploy too:
 In this repo (`.agents/skills/`, which Codex reads; `.claude/skills` is a link to it for Claude Code): `setup-repo` (make a fresh copy of the template the owner's own, and change its
 settings later), `check-out` (read an outside source into an archive, a read doc and a table of
 borrows), `capture-sync` (turn a meeting or a chat into a record), `share-report` (build a page for a reader), `edit-deck` (change and export a deck),
-`deploy-site` (publish the site through its gates).
-Two skills are copies from outside and are not edited here: `browser-harness` (how to control a real browser; the
-command is installed for the user, see `SOURCE.md` beside it) and `ppt-master` (a trimmed copy: the scripts that check
-and export a deck; use it through `edit-deck`). Update them only with `python3 -I scripts/update-skills.py`, and
+`make-video` (brief, storyboard, build, review and publish a video), `deploy-site` (publish the site through its gates).
+Six skills are copies from outside and are not edited here: `browser-harness` (how to control a real browser; the
+command is installed for the user, see `SOURCE.md` beside it) `ppt-master` (a trimmed copy: the scripts that check
+and export a deck; use it through `edit-deck`), and four HyperFrames skills (`hyperframes`, `hyperframes-cli`,
+`hyperframes-registry`, `media-use`: how to write and render a video; use them through `make-video`). Update them only with `python3 -I scripts/update-skills.py`, and
 read the diff before you commit it. `README.md` lists the installed skills that the others call.

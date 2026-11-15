@@ -1,0 +1,24 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: var(--ground); }
+    #intro-bar { position: absolute; left: 192px; top: 400px; width: 14px; height: 220px; background: var(--green); transform-origin: top; }
+    #intro-kicker { position: absolute; left: 240px; top: 396px; font: 700 30px/1 var(--font-body); letter-spacing: 6px; color: var(--accent); }
+    #intro-rule { position: absolute; left: 240px; top: 700px; width: 520px; height: 6px; background: var(--accent); transform-origin: left; }
+    #intro-title { position: absolute; left: 240px; top: 452px; width: 1440px; font: 700 96px/1.1 var(--font-display); color: var(--ink); }
+  </style>
+  <div id="root" data-composition-id="intro" data-width="1920" data-height="1080">
+    <div id="intro-bar-clip" class="clip" data-start="0" data-duration="4"><div id="intro-bar"></div></div>
+    <div id="intro-kicker-clip" class="clip" data-start="0" data-duration="4"><div id="intro-kicker">EXAMPLE VIDEO</div></div>
+    <div id="intro-rule-clip" class="clip" data-start="0" data-duration="4"><div id="intro-rule"></div></div>
+    <div id="intro-title-clip" class="clip" data-start="0" data-duration="4"><div id="intro-title">One repository where every session starts</div></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#intro-bar", { scaleY: 0.35 }, { scaleY: 1, duration: 0.6, ease: "power3.out" }, 0);
+    tl.fromTo("#intro-kicker", { x: -24 }, { x: 0, duration: 0.6, ease: "power3.out" }, 0);
+    tl.fromTo("#intro-title", { y: 28 }, { y: 0, duration: 0.7, ease: "power3.out" }, 0);
+    tl.fromTo("#intro-rule", { scaleX: 0.08 }, { scaleX: 1, duration: 2.6, ease: "power1.inOut" }, 0.8);
+    tl.to(["#intro-bar", "#intro-kicker", "#intro-title", "#intro-rule"], { opacity: 0, duration: 0.3, ease: "power2.in" }, 3.65);
+    window.__timelines["intro"] = tl;
+  </script>
+</template>

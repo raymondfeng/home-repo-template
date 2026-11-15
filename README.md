@@ -59,6 +59,9 @@ against the archive, and every meeting becomes a record with its decisions and i
 | `scripts/credscan.py` | A scan for credential patterns over the files you are about to commit or publish |
 | `.agents/skills/edit-deck` | Change, add or reorder a slide of a deck, export it to `.pptx` and publish it |
 | `projects/`, `scripts/build-deck.sh`, `docs/deck/` | The deck pipeline: a deck is a folder of hand-edited SVG slides under `projects/`; the script checks it, exports it and publishes the `.pptx` to `docs/deck/`. One three-slide example is included |
+| `.agents/skills/make-video` | Make a video in five gates: brief, storyboard, build, review, publish |
+| `video/`, `scripts/build-video.sh`, `docs/video/` | The video pipeline: a video is an HTML project under `video/`; the script checks it, renders it, verifies the file and writes a contact sheet, and publishes the `.mp4` to `docs/video/`. One nine-second example is included |
+| `.agents/skills/hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` | Copies of four HyperFrames skills (Apache-2.0, HeyGen): how to write a video as HTML and render it. About 3.7 MB |
 | `.agents/skills/ppt-master` | A trimmed copy of the ppt-master skill (MIT, Hugo He): the scripts that check a deck and export it. About 12 MB |
 | `.agents/skills/browser-harness` | A copy of the browser-harness skill (MIT, Browser Use): how the agent controls a real browser. The command itself is installed separately |
 | `scripts/update-skills.py` | Refreshes each copied skill from its upstream repo at one commit, and reports when a copy is behind. It never commits |
@@ -142,7 +145,7 @@ An earlier version deployed to Cloudflare Pages. It is the git tag `pages-versio
 
 ## Installed skills, not copied
 
-Six skills in this repo are specific to its method. They call general skills that you install for your user
+Seven skills in this repo are specific to its method. They call general skills that you install for your user
 and that stay installed. With `npx skills add <source>`:
 
 | Skill | Source | Used for |
@@ -153,8 +156,9 @@ and that stay installed. With `npx skills add <source>`:
 
 Check each source's licence before you copy a skill into a repo that you share.
 
-Two skills from outside are copied in, because this repo's skills depend on them. The second is `ppt-master`, trimmed
-to its scripts (see the table at the top and `SOURCE.md` in its folder). The first is `browser-harness`
+Six skills from outside are copied in, because this repo's skills depend on them: `ppt-master`, trimmed to its
+scripts; four HyperFrames skills; and `browser-harness`. Each folder has a `SOURCE.md` with its upstream commit. The
+first that was copied is `browser-harness`
 (`.agents/skills/browser-harness/`, MIT, from [browser-use/browser-harness](https://github.com/browser-use/browser-harness)
 at one commit, which `SOURCE.md` there records). The skill tells the agent how to drive your own Chrome over CDP. It
 does not install the `browser-harness` command: install that once for your user, following `references/install.md` in
@@ -177,12 +181,14 @@ skill the same way, add one entry to `VENDORED` at the top of the script.
   hundreds of docs. Past that, replace `search-index.json` with a real search index.
 - **A second site.** A public room for outside readers needs its own Worker, its own deploy script and a build
   step that resolves every `[FILL]` marker.
+- **Sound in the example video.** The example is nine seconds of type with no voice or music. A voice needs a
+  provider and a key of yours; the `media-use` skill covers it.
 - **Deck galleries on the site.** A published deck is listed on the hub as a file to download. Showing its slides as
   pages needs the finalized SVGs in the dist, which the deploy script does not ship.
 - **An issue board.** Add one when you need it.
 
 ## Licence
 
-MIT. See `LICENSE`. The two copied skills keep their own MIT licences and copyrights, in the `LICENSE` file of each
-folder: `.agents/skills/browser-harness/` (Browser Use) and `.agents/skills/ppt-master/` (Hugo He). The second also
-keeps its sponsor files, which its own integrity check requires.
+MIT. See `LICENSE`. The copied skills keep their own licences and copyrights, in the `LICENSE` file of each folder:
+`.agents/skills/browser-harness/` (MIT, Browser Use), `.agents/skills/ppt-master/` (MIT, Hugo He, with the sponsor
+files that its own integrity check requires), and the four HyperFrames skills (Apache-2.0, HeyGen).

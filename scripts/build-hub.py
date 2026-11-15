@@ -5,7 +5,7 @@
     python3 -I scripts/build-hub.py --check   # exit 1 if any of them is not what this script would write
 
 - index.html: counts by type, the "Start here" list, and what is new.
-- docs.html: every tracked doc, report and published deck (`docs/deck/*.pptx`), with type and age filters, a sort, and search. `?type=read`, `?age=30`,
+- docs.html: every tracked doc, report, published deck (`docs/deck/*.pptx`) and published video (`docs/video/*.mp4`), with type and age filters, a sort, and search. `?type=read`, `?age=30`,
   `?sort=title` and `?q=words` work as URLs.
 - changelog.html: one row per deploy: each commit whose subject is `Deploy <id>: <what shipped>`.
 - 404.html: the page a missing path answers with. Its links start at the site root, because it is served at any path.
@@ -21,7 +21,7 @@ from html.parser import HTMLParser
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 TYPES = [("canon", "Claim"), ("landscape", "Read"), ("syncs", "Sync"), ("plans", "Plan"), ("design", "Design"),
-         ("decisions", "Decision"), ("registers", "Register"), ("deck", "Deck"), ("reports", "Report"), ("other", "Doc")]
+         ("decisions", "Decision"), ("registers", "Register"), ("deck", "Deck"), ("video", "Video"), ("reports", "Report"), ("other", "Doc")]
 LABEL = dict(TYPES)
 SKIP = ("docs/README.md",)
 E = html.escape
@@ -72,8 +72,9 @@ def plain(md):
 
 def read_doc(path):
     text = (ROOT / path).read_text(encoding="utf-8", errors="replace")
-    if path.endswith(".pptx"):  # a published deck: listed by its file name, and opened as a download
-        return pathlib.Path(path).stem.replace("-", " ").replace("_", " ").capitalize() + " (deck)", "", ""
+    if path.endswith((".pptx", ".mp4")):  # a published deck or video: listed by its file name, and opened as the file
+        kind = "deck" if path.endswith(".pptx") else "video"
+        return pathlib.Path(path).stem.replace("-", " ").replace("_", " ").capitalize() + f" ({kind})", "", ""
     if path.endswith(".html"):
         t = Title()
         t.feed(text)
@@ -88,7 +89,7 @@ def read_doc(path):
 
 def entries(manifest):
     dates, notes, out = git_dates(), manifest.get("notes", {}), []
-    for f in git("ls-files", "docs/*.md", "docs/**/*.md", "reports/*.html", "docs/deck/*.pptx").split("\n"):
+    for f in git("ls-files", "docs/*.md", "docs/**/*.md", "reports/*.html", "docs/deck/*.pptx", "docs/video/*.mp4").split("\n"):
         if not f or f in SKIP or f.startswith("docs/assets/") or "/history/" in f:
             continue
         kind = "reports" if f.startswith("reports/") else f.split("/")[1]

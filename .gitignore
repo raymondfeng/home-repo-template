@@ -16,3 +16,7 @@ projects/*/validation-*.log
 projects/*/analysis/
 projects/*/notes/*.md
 !projects/*/notes/total.md
+# Video projects: the render and the tool's working files are derived. The published file is under docs/video/.
+video/*/renders/
+video/*/.hyperframes/
+video/*/node_modules/
